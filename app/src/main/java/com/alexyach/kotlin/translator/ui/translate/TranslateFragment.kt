@@ -1,20 +1,16 @@
 package com.alexyach.kotlin.translator.ui.translate
 
+import android.app.Activity
 import android.os.Bundle
-import android.provider.UserDictionary.Words.APP_ID
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
-import com.alexyach.kotlin.translator.retrofit.APP_KEY
-import com.alexyach.kotlin.translator.retrofit.RetrofitImpl
 import com.alexyach.kotlin.translator.retrofit.modelDto.Translation
 import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
-import okhttp3.*
-import java.io.IOException
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         TranslateViewModel>() {
@@ -27,53 +23,80 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         container: ViewGroup?
     ) = FragmentTranslateBinding.inflate(inflater, container, false)
 
-    private val retrofit = RetrofitImpl()
-    private var responseDto: WordTranslate? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnTranslate.setOnClickListener {
-
-            responseDto = retrofit
-                .getTranslateWord(binding.etInitialWord.text.toString())
-
-            val translateWord: List<Translation>? = responseDto?.results?.get(0)?.
-            lexicalEntries?.get(0)?.entries?.get(0)?.senses?.get(0)?.translations
-
-            binding.tvTranslatedWord.text = translateWord.toString()
-
-
-//            responseOkhhtp()
+        /** Спостереження */
+        viewModel.getTranslateWordStateLiveData().observe(viewLifecycleOwner){
+            responseState(it)
         }
 
+        binding.btnTranslate.setOnClickListener {
+            viewModel.getTranslateWord(binding.etInitialWord.text.toString())
+            hideKeyboard()
+        }
+
+
     }
 
-
-    private fun responseOkhhtp() {
-
-        val client = OkHttpClient()
-
-        val request = Request.Builder()
-//            .url("https://od-api.oxforddictionaries.com/api/v2/entries/en-us/word")
-            .url("https://od-api.oxforddictionaries.com/api/v2/translations/en/ru/word")
-            .addHeader("app_id", APP_ID)
-            .addHeader("app_key", APP_KEY)
-            .build()
-
-        val response= client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                Log.d("myLogs", "onResponse ${response.code()}")
-                Log.d("myLogs", "onResponse ${response.body()?.string()}")
+    private fun responseState(state: TranslateWordState) {
+        when(state) {
+            is TranslateWordState.SuccessTranslateWord -> {
+                renderData(state.word)
+                showText()
             }
 
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("myLogs", "Error ${e.message}")
+            is TranslateWordState.ErrorTranslateWord -> {
+                showTextWordTranslate(listOf(state.error.message!!))
+                showText()
             }
-        })
 
-        Log.d("myLogs", "${response}")
+            TranslateWordState.Loading -> {
+                showLoading()
+            }
+        }
     }
+
+    private fun renderData(word: WordTranslate) {
+        val translateWord: List<Translation>
+
+//        Log.d("myLogs", "Fragment, response: ${word}")
+
+        word.let {
+            translateWord =
+                it.results[0].lexicalEntries[0].entries[0].senses[0].translations
+        }
+
+        showTextWordTranslate(translateWord.map { it.text })
+
+    }
+
+    private fun showTextWordTranslate(wordList: List<String>) {
+        var textStr = " ○ "
+
+        for (i in 0 until wordList.size - 1) {
+            textStr += "${wordList[i]} \n ○ "
+        }
+        textStr += wordList.last()
+        binding.tvTranslatedWord.text = textStr
+
+//        Log.d("myLogs", "wordList: $textStr")
+
+    }
+
+    private fun showLoading() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+    private fun showText() {
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun hideKeyboard() {
+        val imm =
+            requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+    }
+
 
     companion object {
         fun newInstance() = TranslateFragment()
