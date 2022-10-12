@@ -8,4 +8,6 @@ sealed class TranslateWordState {
     data class ErrorTranslateWord(val error: Exception): TranslateWordState()
 
     object Loading: TranslateWordState()
+    // Для початкового значення в StateFlow
+    object Started: TranslateWordState()
 }
