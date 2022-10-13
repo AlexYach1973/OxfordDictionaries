@@ -78,7 +78,7 @@
                         android:id="@+id/button_sound"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_volume_24"
+                        android:src="@drawable/ic_volume_48"
                         android:visibility = "invisible"
                         android:contentDescription="@string/app_name"
                         app:cornerRadius="16dp"

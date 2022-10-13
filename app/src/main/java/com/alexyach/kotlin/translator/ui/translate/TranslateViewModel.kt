@@ -1,5 +1,6 @@
 package com.alexyach.kotlin.translator.ui.translate
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.kotlin.translator.retrofit.ITranslateRepository
@@ -25,6 +26,7 @@ class TranslateViewModel : ViewModel() {
                 _translateWordStateFlow.value = it
             }
 
+        Log.d("myLogs", "ViewModel Thread: ${Thread.currentThread().name}")
     }
 
 }

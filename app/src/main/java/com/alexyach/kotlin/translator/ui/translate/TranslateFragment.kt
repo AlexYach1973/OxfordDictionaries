@@ -148,10 +148,10 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         Log.d("myLogs", "examples: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples.size}")
         Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples[0].text}")*/
 
-        Log.d(
+        /*Log.d(
             "myLogs",
             "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].pronunciations[0].audioFile}"
-        )
+        )*/
 
     }
 

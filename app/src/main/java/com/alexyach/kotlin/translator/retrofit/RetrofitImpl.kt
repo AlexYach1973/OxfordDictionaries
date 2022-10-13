@@ -1,8 +1,11 @@
 package com.alexyach.kotlin.translator.retrofit
 
+import android.util.Log
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -26,6 +29,8 @@ class RetrofitImpl : ITranslateRepository {
 
     override suspend fun getTranslateWordAsync(word: String)=
         flow {
+
+            Log.d("myLogs", "Retrofit Thread: ${Thread.currentThread().name}")
 
             try {
                 val response = api.translateServiceAsync(
@@ -53,5 +58,5 @@ class RetrofitImpl : ITranslateRepository {
             } catch (e: Exception) {
                 TranslateWordState.ErrorTranslateWord(Exception(e))
             }
-        }
+        }.flowOn(Dispatchers.IO)
 }
