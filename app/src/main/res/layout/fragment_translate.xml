@@ -23,6 +23,16 @@
             android:textStyle="bold|italic"
             tools:text="Input" />
 
+        <!--<androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="En"
+            android:textOff="Ru"
+            android:checked="true"
+            style="@style/Switch"
+            app:showText="true"/>-->
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -70,9 +80,9 @@
 
         <!--        app:navigationIcon="@drawable/ic_launcher_foreground"-->
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent">-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/button_sound"
@@ -83,7 +93,17 @@
                         android:contentDescription="@string/app_name"
                         app:cornerRadius="16dp"
                         android:backgroundTint="@color/purple_500"/>
-<!--                </LinearLayout>-->
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switch_language"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textOn="En"
+                        android:textOff="Ru"
+                        android:checked="true"
+                        app:showText="true"
+                        style="@style/Switch"/>
+                </LinearLayout>
 
 <!--        style="@style/TextAppearance.AppCompat.Widget.Button"-->
 

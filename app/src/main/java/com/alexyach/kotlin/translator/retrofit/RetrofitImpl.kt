@@ -1,11 +1,13 @@
 package com.alexyach.kotlin.translator.retrofit
 
-import android.util.Log
+import com.alexyach.kotlin.translator.model.Language
+import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -27,36 +29,60 @@ class RetrofitImpl : ITranslateRepository {
         serviceImpl.create(ITranslateService::class.java)
 
 
-    override suspend fun getTranslateWordAsync(word: String)=
-        flow {
+    override suspend fun getTranslateWordAsync(word: String, language: Language) =
 
-            Log.d("myLogs", "Retrofit Thread: ${Thread.currentThread().name}")
+        when (language) {
+            Language.En -> {
+                flow {
+                    try {
+                        val response =
+                            api.translateServiceAsyncEnRu(APP_ID, APP_KEY, word)
 
-            try {
-                val response = api.translateServiceAsync(
-                    APP_ID,
-                    APP_KEY,
-                    word
-                )
+                        if (response.body() == null) {
+                            emit(TranslateWordState.ErrorTranslateWord(Exception("Не має такого слова")))
+                        }
 
-                if (response.body() == null) {
-                    emit(TranslateWordState.ErrorTranslateWord(Exception("Не має такого слова")))
-                }
+                        emit(responseByCode(response))
 
-                when (response.code()) {
-                    200 -> {
-//                        Log.d("myLogs", "RetrofitImpl, Thread: ${Thread.currentThread().name}")
-                        emit(TranslateWordState.SuccessTranslateWord(response.body()!!))
+                    } catch (e: Exception) {
+                        TranslateWordState.ErrorTranslateWord(Exception(e))
                     }
-                    404 -> emit(TranslateWordState.ErrorTranslateWord(Exception("Не знайдено")))
-                    414 -> emit(TranslateWordState.ErrorTranslateWord(Exception("URI запит занадто довгий")))
-                    500 -> emit(TranslateWordState.ErrorTranslateWord(Exception("Внутрішня помилка сервера")))
-                    502 -> emit(TranslateWordState.ErrorTranslateWord(Exception("Поганий шлюз")))
-                    503 -> emit(TranslateWordState.ErrorTranslateWord(Exception("Сервіс недоступний")))
-                    504 -> emit(TranslateWordState.ErrorTranslateWord(Exception("Час очікування шлюзу")))
-                }
-            } catch (e: Exception) {
-                TranslateWordState.ErrorTranslateWord(Exception(e))
+                }.flowOn(Dispatchers.IO)
             }
-        }.flowOn(Dispatchers.IO)
+
+            Language.Ru -> {
+                flow {
+                    try {
+                        val response =
+                            api.translateServiceAsyncRuEn(APP_ID, APP_KEY, word)
+
+                        if (response.body() == null) {
+                            emit(TranslateWordState.ErrorTranslateWord(Exception("Не має такого слова")))
+                        }
+
+                        emit(responseByCode(response))
+
+                    } catch (e: Exception) {
+                        TranslateWordState.ErrorTranslateWord(Exception(e))
+                    }
+                }.flowOn(Dispatchers.IO)
+            }
+        }
+
+    private fun responseByCode(response: Response<WordTranslate>): TranslateWordState {
+        when (response.code()) {
+            200 -> {
+                return TranslateWordState.SuccessTranslateWord(response.body()!!)
+            }
+            404 -> return TranslateWordState.ErrorTranslateWord(Exception("Не знайдено"))
+            414 -> return TranslateWordState.ErrorTranslateWord(Exception("URI запит занадто довгий"))
+            500 -> return TranslateWordState.ErrorTranslateWord(Exception("Внутрішня помилка сервера"))
+            502 -> return TranslateWordState.ErrorTranslateWord(Exception("Поганий шлюз"))
+            503 -> return TranslateWordState.ErrorTranslateWord(Exception("Сервіс недоступний"))
+            504 -> return TranslateWordState.ErrorTranslateWord(Exception("Час очікування шлюзу"))
+        }
+        return TranslateWordState.ErrorTranslateWord(Exception("Не зрозуміла похибка"))
+    }
+
+
 }

@@ -12,11 +12,18 @@ import retrofit2.http.Path
 interface ITranslateService {
 
     @GET("translations/en/ru/{word}")
-    suspend fun translateServiceAsync(
+    suspend fun translateServiceAsyncEnRu(
         @Header("app_id") app_id: String,
         @Header("app_key") app_key: String,
         @Path("word") word : String
     ): Response<WordTranslate>
-//    ): Call<WordTranslate>
+
+    @GET("translations/ru/en/{word}")
+    suspend fun translateServiceAsyncRuEn(
+        @Header("app_id") app_id: String,
+        @Header("app_key") app_key: String,
+        @Path("word") word : String
+    ): Response<WordTranslate>
+
 
 }

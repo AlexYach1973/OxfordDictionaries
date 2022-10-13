@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
+import com.alexyach.kotlin.translator.model.Language
 import com.alexyach.kotlin.translator.retrofit.modelDto.Sense
 import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
@@ -23,6 +24,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         TranslateViewModel>() {
 
     private lateinit var textShow: String
+    private var language = Language.En
 
     // wav
     private lateinit var mediaPlayer: MediaPlayer
@@ -39,9 +41,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        mediaPlayer = MediaPlayer.create(requireContext(), soundURL)
-
-        /** StateFlow */
+        /** Observe StateFlow */
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.translateWordStateFlow.collect {
@@ -55,9 +55,19 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
     private fun setupClickListener() {
 
+        // switch Language
+        binding.switchLanguage
+            .setOnCheckedChangeListener { _, isChecked ->
+                language = if (isChecked) {
+                    Language.En
+                } else {
+                    Language.Ru
+                }
+            }
+
         // FAB translate
         binding.fabTranslate.setOnClickListener {
-            viewModel.getTranslateWordFlow(binding.etInitialWord.text.toString())
+            viewModel.getTranslateWordFlow(binding.etInitialWord.text.toString(), language)
             hideKeyboard()
         }
 
@@ -166,7 +176,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     }
 
     private fun setupSound(wordDto: WordTranslate) {
-        val soundPath = wordDto.results[0].lexicalEntries[0].entries[0].pronunciations[0].audioFile
+        val soundPath: String? = wordDto?.results?.get(0)?.lexicalEntries?.get(0)?.entries?.get(0)?.pronunciations?.get(0)?.audioFile
 
         if (!soundPath.isNullOrEmpty()) {
             showSound()

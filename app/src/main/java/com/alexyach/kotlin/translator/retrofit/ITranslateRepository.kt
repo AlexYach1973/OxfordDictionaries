@@ -1,8 +1,9 @@
 package com.alexyach.kotlin.translator.retrofit
 
+import com.alexyach.kotlin.translator.model.Language
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
 import kotlinx.coroutines.flow.Flow
 
 interface ITranslateRepository {
-    suspend fun getTranslateWordAsync(word: String): Flow<TranslateWordState>
+    suspend fun getTranslateWordAsync(word: String, language: Language): Flow<TranslateWordState>
 }
