@@ -33,7 +33,7 @@
             style="@style/Switch"
             app:showText="true"/>-->
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -45,7 +45,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="Output" />
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -75,8 +75,10 @@
         app:fabCradleMargin="8dp"
         app:fabCradleRoundedCornerRadius="32dp"
         app:hideOnScroll="true">
+<!--        app:layout_scrollFlags="scroll|enterAlways">-->
 
 <!--        app:menu="@menu/menu_bottom_app_bar">-->
+<!--        app:NestedScrollView="true"-->
 
         <!--        app:navigationIcon="@drawable/ic_launcher_foreground"-->
 

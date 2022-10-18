@@ -1,5 +1,6 @@
 package com.alexyach.kotlin.translator.retrofit
 
+import android.util.Log
 import com.alexyach.kotlin.translator.model.Language
 import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
@@ -40,9 +41,9 @@ class RetrofitImpl : ITranslateRepository {
 
                         if (response.body() == null) {
                             emit(TranslateWordState.ErrorTranslateWord(Exception("Не має такого слова")))
+                        } else {
+                            emit(responseByCode(response))
                         }
-
-                        emit(responseByCode(response))
 
                     } catch (e: Exception) {
                         TranslateWordState.ErrorTranslateWord(Exception(e))
@@ -58,9 +59,9 @@ class RetrofitImpl : ITranslateRepository {
 
                         if (response.body() == null) {
                             emit(TranslateWordState.ErrorTranslateWord(Exception("Не має такого слова")))
+                        } else {
+                            emit(responseByCode(response))
                         }
-
-                        emit(responseByCode(response))
 
                     } catch (e: Exception) {
                         TranslateWordState.ErrorTranslateWord(Exception(e))

@@ -96,7 +96,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
                 hideSound()
             }
             TranslateWordState.Started -> {
-                Log.d("myLogs", "WordState: Started")
+//                Log.d("myLogs", "WordState: Started")
             }
         }
     }
