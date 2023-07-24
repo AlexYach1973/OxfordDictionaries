@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
@@ -18,6 +19,8 @@ import com.alexyach.kotlin.translator.model.Language
 import com.alexyach.kotlin.translator.retrofit.modelDto.Sense
 import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding,
@@ -42,13 +45,10 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         super.onViewCreated(view, savedInstanceState)
 
         /** Observe StateFlow */
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.translateWordStateFlow.collect {
-                    responseState(it)
-                }
-            }
-        }
+        viewModel.translateWordStateFlow
+            .flowWithLifecycle(lifecycle)
+            .onEach { responseState(it) }
+            .launchIn(lifecycleScope)
 
         setupClickListener()
     }
@@ -75,7 +75,6 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         binding.buttonSound.setOnClickListener{
             playSound()
         }
-
     }
 
     private fun responseState(state: TranslateWordState) {
