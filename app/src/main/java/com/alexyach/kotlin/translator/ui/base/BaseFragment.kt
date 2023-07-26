@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
-import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
 
 abstract class BaseFragment<VB: ViewBinding, VM: ViewModel> : Fragment() {
 

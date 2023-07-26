@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray_light"
         android:orientation="vertical">
 
         <EditText
@@ -23,29 +24,12 @@
             android:textStyle="bold|italic"
             tools:text="Input" />
 
-        <!--<androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_language"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="En"
-            android:textOff="Ru"
-            android:checked="true"
-            style="@style/Switch"
-            app:showText="true"/>-->
-
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/translateRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-            <TextView
-                android:id="@+id/tv_translated_word"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/purple_700"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="Output" />
-        </androidx.core.widget.NestedScrollView>
 
         <ProgressBar
             android:id="@+id/progress_bar"

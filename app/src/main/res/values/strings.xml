@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Translator</string>
 
-<!--    Menu BottomAppBar-->
+    <!--    Menu BottomAppBar-->
     <string name="menu_volume">прослухати</string>
     <string name="menu_example">приклади</string>
+
+    <!--    TranslateRecyclerItem-->
+    <string name="translate">ПЕРЕКЛАД</string>
+    <string name="uses">застосування</string>
 </resources>

@@ -9,19 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
-import com.alexyach.kotlin.translator.model.Language
-import com.alexyach.kotlin.translator.retrofit.modelDto.Sense
-import com.alexyach.kotlin.translator.retrofit.modelDto.WordTranslate
+import com.alexyach.kotlin.translator.domain.model.Language
+import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         TranslateViewModel>() {
@@ -31,6 +27,8 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
     // wav
     private lateinit var mediaPlayer: MediaPlayer
+
+    private lateinit var adapter: TranslateAdapter
 
     override val viewModel: TranslateViewModel by lazy {
         ViewModelProvider(this)[TranslateViewModel::class.java]
@@ -72,111 +70,64 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         }
 
         // Button Sound
-        binding.buttonSound.setOnClickListener{
+        binding.buttonSound.setOnClickListener {
             playSound()
         }
     }
 
     private fun responseState(state: TranslateWordState) {
         when (state) {
-            is TranslateWordState.SuccessTranslateWord -> {
-                renderData(state.word)
-                showText()
+            is TranslateWordState.Success -> {
+                renderSuccessData(state.wordModel)
             }
 
-            is TranslateWordState.ErrorTranslateWord -> {
+            is TranslateWordState.Error -> {
                 renderError(state)
-                hideSound()
-                showText()
             }
 
             TranslateWordState.Loading -> {
                 showLoading()
                 hideSound()
             }
+
             TranslateWordState.Started -> {
-//                Log.d("myLogs", "WordState: Started")
             }
         }
     }
 
-    private fun renderError(state: TranslateWordState.ErrorTranslateWord) {
-        textShow = ""
-        showTextWordTranslate(listOf(state.error.message!!), "???")
+    private fun setupAdapter(wordModel: WordTranslateModel) {
+        adapter = TranslateAdapter(wordModel)
+        binding.translateRecyclerView.adapter = adapter
     }
 
-    private fun renderData(wordDto: WordTranslate) {
+    private fun renderSuccessData(wordModel: WordTranslateModel) {
+        setupAdapter(wordModel)
+        setupSound(wordModel.soundPath)
+        showText()
+    }
+
+    private fun renderError(state: TranslateWordState.Error) {
         textShow = ""
-
-//        Log.d("myLogs", "Fragment, response: ${wordDto}")
-
-        setupSound(wordDto)
-
-        val wordDtoSens: List<Sense>? = wordDto.results[0].lexicalEntries[0].entries[0].senses
-
-        wordDtoSens?.forEach { sens ->
-            val translationList = sens.translations
-
-            // Words
-            if (!sens.translations.isNullOrEmpty()) {
-                val currentWord: List<String>? = sens.translations.map { it.text }
-
-                if (!currentWord.isNullOrEmpty()) {
-                    showTextWordTranslate(currentWord, "ПЕРЕКЛАД:")
-                } else {
-                    Log.d("myLogs", "currentWord == null")
-                }
-
-            } else {
-                showTextWordTranslate(listOf("Не має"), "ПЕРЕКЛАД:")
-                Log.d("myLogs", "translationList == null")
-            }
-
-            // Examples
-            if (!sens.examples.isNullOrEmpty()) {
-                val currentExample: List<String>? = sens.examples.map { it.text }
-
-                if (!currentExample.isNullOrEmpty()) {
-                    showTextWordTranslate(currentExample, "ВИКОРИСТАННЯ:")
-                } else {
-                    Log.d("myLogs", "currentExample == null")
-                }
-            } else {
-                showTextWordTranslate(listOf("Не має"), "ВИКОРИСТАННЯ:")
-                Log.d("myLogs", "examples == null")
-            }
-        }
+        setupAdapter(
+            WordTranslateModel(
+                listOf("${state.error.message}"),
+                listOf("")
+            )
+        )
+        hideSound()
+        showText()
+    }
 
 
-        // Log
-        /*Log.d("myLogs", "Result: ${wordDto.results.size}")
-        Log.d("myLogs", "lexicalEntries: ${wordDto.results[0].lexicalEntries.size}")
-        Log.d("myLogs", "entries: ${wordDto.results[0].lexicalEntries[0].entries.size}")
-        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses.size}")
+    // Log
+//        Log.d("myLogs", "lexicalEntries: ${wordDto.results[0].lexicalEntries.size}")
+//        Log.d("myLogs", "entries: ${wordDto.results[0].lexicalEntries[0].entries.size}")
+//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses.size}")
 //        Log.d("myLogs", "translations: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].translations.size}")
-        Log.d("myLogs", "examples: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples.size}")
-        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples[0].text}")*/
+//        Log.d("myLogs", "examples: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples.size}")
+//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples[0].text}")
 
-        /*Log.d(
-            "myLogs",
-            "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].pronunciations[0].audioFile}"
-        )*/
-
-    }
-
-    private fun showTextWordTranslate(wordList: List<String>, title: String) {
-
-        textShow += "\n ------------- \n $title  "
-
-        for (element in wordList) {
-            textShow += "\n○ ${element} "
-        }
-        binding.tvTranslatedWord.text = textShow
-    }
-
-    private fun setupSound(wordDto: WordTranslate) {
-        val soundPath: String? = wordDto?.results?.get(0)?.lexicalEntries?.get(0)?.entries?.get(0)?.pronunciations?.get(0)?.audioFile
-
+    private fun setupSound(soundPath: String) {
         if (!soundPath.isNullOrEmpty()) {
             showSound()
             mediaPlayer = MediaPlayer.create(requireContext(), Uri.parse(soundPath))
@@ -194,15 +145,18 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.translateRecyclerView.visibility = View.GONE
     }
 
     private fun showText() {
         binding.progressBar.visibility = View.GONE
+        binding.translateRecyclerView.visibility = View.VISIBLE
     }
 
     private fun showSound() {
         binding.buttonSound.visibility = View.VISIBLE
     }
+
     private fun hideSound() {
         binding.buttonSound.visibility = View.INVISIBLE
     }

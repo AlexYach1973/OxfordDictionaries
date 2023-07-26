@@ -1,7 +1,7 @@
 package com.alexyach.kotlin.translator
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.alexyach.kotlin.translator.databinding.ActivityMainBinding
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 
