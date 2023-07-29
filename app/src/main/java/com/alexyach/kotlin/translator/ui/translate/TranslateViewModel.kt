@@ -2,19 +2,30 @@ package com.alexyach.kotlin.translator.ui.translate
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.retrofit.ITranslateRepository
+import com.alexyach.kotlin.translator.data.local.DatabaseImpl
+import com.alexyach.kotlin.translator.data.local.database.AppDatabase
+import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
+import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
 import com.alexyach.kotlin.translator.data.retrofit.RetrofitImpl
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
+import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.model.Language
+import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
+import com.alexyach.kotlin.translator.utils.NO_TRANSLATE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TranslateViewModel : ViewModel() {
+class TranslateViewModel(database: AppDatabase) : ViewModel() {
 
-    private val repository: ITranslateRepository = RetrofitImpl()
+    private val remoteRepository: ITranslateRepository = RetrofitImpl()
+    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
 
 
     /** StateFlow */
@@ -25,17 +36,74 @@ class TranslateViewModel : ViewModel() {
     private val _soundPathStateFlow: MutableStateFlow<String?> = MutableStateFlow(null)
     val soundPathStateFlow: StateFlow<String?> = _soundPathStateFlow
 
+    private var listWordsRoom: List<WordsEntityModel> = listOf()
+
+    // For Toast
+    private var _toastMessage: MutableStateFlow<Int> = MutableStateFlow(0)
+    val toastMessage: StateFlow<Int> = _toastMessage
+
+    init {
+        getListWordsFromRoom()
+    }
     fun getTranslateWordFlow(word: String, language: Language) = viewModelScope.launch {
         _translateWordStateFlow.value = TranslateWordState.Loading
 
-        repository.getTranslateWordAsync(word, language)
+        remoteRepository.getTranslateWordAsync(word, language)
             .catch { Log.d("myLogs", "TranslateViewModel: error") }
             .collect {
                 _translateWordStateFlow.value = it
             }
     }
 
+    fun insertWordToDatabase(
+        wordInit: String,
+        translateWord: WordTranslateModel) {
 
+        if (isContainsWordInRoom(wordInit)) {
+            _toastMessage.value = 1
+            return
+        }
+
+        viewModelScope.launch {
+            roomRepository.insert(
+                WordsEntityModel(
+                    0,
+                    wordInit = wordInit,
+                    wordTranslate = collectTranslateWords(translateWord)
+//                    wordTranslate = translateWord.translateWordList[0]
+                )
+            )
+        }
+    }
+
+    private fun collectTranslateWords(translateWord: WordTranslateModel): String {
+        var collectWord = ""
+        translateWord.translateWordList.forEach {
+            if (it != NO_TRANSLATE) {
+                collectWord += "$it\n"
+            }
+        }
+        return collectWord
+    }
+
+    private fun isContainsWordInRoom(word: String): Boolean {
+        var isContains = false
+        listWordsRoom.forEach{
+            if (it.wordInit == word) {
+                isContains = true
+            }
+        }
+        return isContains
+    }
+
+
+    private fun getListWordsFromRoom() {
+        viewModelScope.launch {
+            roomRepository.getAll()
+                .flowOn(Dispatchers.IO)
+                .collect { listWordsRoom = it }
+        }
+    }
 
     private fun soundPath(wordDto: WordTranslate) {
         val soundPath: String? = wordDto?.results?.get(0)?.lexicalEntries?.get(0)
@@ -43,6 +111,17 @@ class TranslateViewModel : ViewModel() {
 
         if (!soundPath.isNullOrEmpty()) {
             _soundPathStateFlow.value = soundPath
+        }
+    }
+
+    companion object {
+        fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
+            val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return TranslateViewModel(database) as T
+                }
+            }
+            return factory
         }
     }
 }

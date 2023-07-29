@@ -1,4 +1,4 @@
-package com.alexyach.kotlin.translator.data.retrofit
+package com.alexyach.kotlin.translator.domain.interfaces
 
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState

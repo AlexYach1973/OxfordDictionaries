@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
         app:cardUseCompatPadding="true"
-        android:elevation="4dp">
+        android:elevation="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/gradient_cardview"
             android:orientation="vertical">
 
             <TextView
@@ -24,8 +25,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text= "@string/translate"
-                android:textColor="@color/gray_dark"
-                android:textSize="28sp"
+                android:textColor="@color/yellow_dark"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -33,8 +34,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Text"
+                android:textColor="@color/purple_700"
+                android:textStyle="bold"
                 android:padding="4dp"
-                android:textSize="18sp"/>
+                android:textSize="20sp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -49,8 +52,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/uses"
-                android:textColor="@color/gray_dark"
-                android:textSize="26sp"
+                android:textColor="@color/teal_200"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -58,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="italic"
+                android:textColor="@color/purple_500"
                 android:padding="4dp"
                 android:textSize="18sp"/>
         </LinearLayout>

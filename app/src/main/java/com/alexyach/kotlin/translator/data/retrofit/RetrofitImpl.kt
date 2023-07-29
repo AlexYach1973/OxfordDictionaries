@@ -1,6 +1,7 @@
 package com.alexyach.kotlin.translator.data.retrofit
 
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
+import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
 import com.alexyach.kotlin.translator.utils.wordDtoToWordTranslateModel
@@ -19,15 +20,6 @@ const val BASE_URL = "https://od-api.oxforddictionaries.com/api/v2/"
 
 class RetrofitImpl : ITranslateRepository {
 
-    private val serviceImpl = Retrofit.Builder().apply {
-        baseUrl(BASE_URL)
-        addConverterFactory(
-            GsonConverterFactory.create(GsonBuilder().setLenient().create())
-        )
-    }.build()
-
-    private val api: ITranslateService =
-        serviceImpl.create(ITranslateService::class.java)
 
 
     override fun getTranslateWordAsync(word: String, language: Language) =
@@ -37,12 +29,12 @@ class RetrofitImpl : ITranslateRepository {
                 flow {
                     try {
                         val response =
-                            api.translateServiceAsyncEnRu(
+                            RetrofitBuilder.api.translateServiceAsyncEnRu(
                                 APP_ID,
                                 APP_KEY, word)
 
                         if (response.body() == null) {
-                            emit(TranslateWordState.Error(Exception("Не має такого слова")))
+                            emit(TranslateWordState.Error(Exception("Немає такого слова")))
                         } else {
                             emit(responseByCode(response))
                         }
@@ -58,12 +50,12 @@ class RetrofitImpl : ITranslateRepository {
                 flow {
                     try {
                         val response =
-                            api.translateServiceAsyncRuEn(
+                            RetrofitBuilder.api.translateServiceAsyncRuEn(
                                 APP_ID,
                                 APP_KEY, word)
 
                         if (response.body() == null) {
-                            emit(TranslateWordState.Error(Exception("Не має такого слова")))
+                            emit(TranslateWordState.Error(Exception("Немає такого слова")))
                         } else {
                             emit(responseByCode(response))
                         }
@@ -89,6 +81,17 @@ class RetrofitImpl : ITranslateRepository {
         }
         return TranslateWordState.Error(Exception("Не зрозуміла похибка"))
     }
+}
 
+object RetrofitBuilder {
+    private val serviceImpl = Retrofit.Builder().apply {
+        baseUrl(BASE_URL)
+        addConverterFactory(
+            GsonConverterFactory.create(GsonBuilder().setLenient().create())
+        )
+    }.build()
+
+    val api: ITranslateService =
+        serviceImpl.create(ITranslateService::class.java)
 
 }

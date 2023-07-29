@@ -12,6 +12,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.alexyach.kotlin.translator.App
+import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
@@ -29,9 +31,12 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var mediaPlayer: MediaPlayer
 
     private lateinit var adapter: TranslateAdapter
+    private var wordTranslateModel = WordTranslateModel()
 
     override val viewModel: TranslateViewModel by lazy {
-        ViewModelProvider(this)[TranslateViewModel::class.java]
+        ViewModelProvider(this, TranslateViewModel.getViewModelFactory(
+            (requireActivity().application as App).database
+        ))[TranslateViewModel::class.java]
     }
 
     override fun getViewBinding(
@@ -42,13 +47,21 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /** Observe StateFlow */
+        observe()
+        setupClickListener()
+    }
+
+    private fun observe() {
         viewModel.translateWordStateFlow
             .flowWithLifecycle(lifecycle)
             .onEach { responseState(it) }
             .launchIn(lifecycleScope)
 
-        setupClickListener()
+        viewModel.toastMessage
+            .flowWithLifecycle(lifecycle)
+            .onEach { showToast(it) }
+            .launchIn(lifecycleScope)
+
     }
 
     private fun setupClickListener() {
@@ -65,7 +78,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
         // FAB translate
         binding.fabTranslate.setOnClickListener {
-            viewModel.getTranslateWordFlow(binding.etInitialWord.text.toString(), language)
+            viewModel.getTranslateWordFlow(binding.etInitialWord.text.toString().trim(), language)
             hideKeyboard()
         }
 
@@ -73,8 +86,28 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         binding.buttonSound.setOnClickListener {
             playSound()
         }
+
+        // Button Save word
+        binding.saveWordBtn.setOnClickListener {
+            val initWord = binding.etInitialWord.text.toString().trim()
+            if (initWord.isEmpty()
+                || wordTranslateModel.translateWordList.isEmpty()) {
+                toast("Порожнє поле")
+            } else {
+                viewModel.insertWordToDatabase(
+                    initWord,
+                    wordTranslateModel
+                )
+            }
+        }
     }
 
+    private fun showToast(toastMessage: Int) {
+        when(toastMessage) {
+            1 -> toast("Таке слово вже є")
+            else -> {}
+        }
+    }
     private fun responseState(state: TranslateWordState) {
         when (state) {
             is TranslateWordState.Success -> {
@@ -90,8 +123,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
                 hideSound()
             }
 
-            TranslateWordState.Started -> {
-            }
+            TranslateWordState.Started -> { }
         }
     }
 
@@ -101,6 +133,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     }
 
     private fun renderSuccessData(wordModel: WordTranslateModel) {
+        wordTranslateModel = wordModel
         setupAdapter(wordModel)
         setupSound(wordModel.soundPath)
         showText()
@@ -146,11 +179,15 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
         binding.translateRecyclerView.visibility = View.GONE
+//        binding.saveWordBtn.isClickable = false
+        binding.saveWordBtn.visibility = View.GONE
     }
 
     private fun showText() {
         binding.progressBar.visibility = View.GONE
         binding.translateRecyclerView.visibility = View.VISIBLE
+//        binding.saveWordBtn.isClickable = true
+        binding.saveWordBtn.visibility = View.VISIBLE
     }
 
     private fun showSound() {

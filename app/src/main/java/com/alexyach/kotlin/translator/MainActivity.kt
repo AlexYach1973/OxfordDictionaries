@@ -3,7 +3,7 @@ package com.alexyach.kotlin.translator
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.alexyach.kotlin.translator.databinding.ActivityMainBinding
-import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
+import com.alexyach.kotlin.translator.ui.homepage.HomepageFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.container, TranslateFragment.newInstance())
+                .add(R.id.container, HomepageFragment.newInstance())
                 .commit()
         }
     }

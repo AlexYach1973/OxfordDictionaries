@@ -7,10 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".ui.translate.TranslateFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/saveWordBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitCenter"
+        android:layout_marginBottom="62dp"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        android:src="@drawable/save_word"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray_light"
+        android:background="@drawable/gradient_translate_fragment"
         android:orientation="vertical">
 
         <EditText
@@ -20,9 +32,9 @@
             android:autofillHints="@string/app_name"
             android:inputType="text"
             android:textColor="@color/purple_700"
-            android:textSize="30sp"
+            android:textSize="32sp"
             android:textStyle="bold|italic"
-            tools:text="Input" />
+            tools:text="Input Word" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/translateRecyclerView"
@@ -38,6 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -90,6 +104,24 @@
                         android:checked="true"
                         app:showText="true"
                         style="@style/Switch"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                   <!-- <ImageButton
+                        android:id="@+id/saveWordBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/purple_500"
+                        android:src="@drawable/save_word"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center_vertical"
+                        tools:text="save"
+                        android:visibility="gone"
+                        android:contentDescription="save" />-->
                 </LinearLayout>
 
 <!--        style="@style/TextAppearance.AppCompat.Widget.Button"-->

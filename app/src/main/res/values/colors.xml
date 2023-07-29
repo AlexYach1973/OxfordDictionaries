@@ -10,6 +10,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray_light">#FFDDDDDD</color>
     <color name="gray_dark">#FF999999</color>
+    <color name="yellow_dark">#FFFFFF66</color>
+    <color name="yellow_light">#FFFFFFCC</color>
+
 
     <color name="teal_200_transparent">#9903DAC5</color>
 </resources>

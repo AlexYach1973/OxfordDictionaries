@@ -21,4 +21,14 @@
         <!-- активное состояние (30% прозрачности для фона) -->
         <item name="colorControlActivated">@color/teal_200</item>
     </style>
+
+<!--    Style Homeoafe Fragment-->
+    <style name="homePageButton">
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/yellow_dark</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
 </resources>
