@@ -54,13 +54,9 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
         listWord.forEach {
             if (it.wordInit.contains(symbols) || it.wordTranslate.contains(symbols)) {
                 searchListWord.add(it)
-
-                Log.d("myLogs", "searchWord it: $it")
             }
         }
-
         _listWordsStateFlow.value =  ListWordsState.Success(searchListWord)
-
     }
 
     companion object {

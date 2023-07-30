@@ -51,9 +51,6 @@ class ListWordsFragment
                 viewModel.searchWord(symbol.toString())
 //                Log.d("myLogs", "onTextChanged: symbol: $symbol")
             }
-
-
-
         })
     }
 

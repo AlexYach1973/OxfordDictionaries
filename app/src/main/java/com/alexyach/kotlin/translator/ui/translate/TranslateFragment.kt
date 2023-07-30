@@ -4,6 +4,8 @@ import android.app.Activity
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -98,8 +100,20 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
                     initWord,
                     wordTranslateModel
                 )
+                hideFabSave()
             }
         }
+
+        // Init Word Edit Text
+        binding.etInitialWord.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                hideFabSave()
+            }
+
+        })
     }
 
     private fun showToast(toastMessage: Int) {
@@ -123,7 +137,9 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
                 hideSound()
             }
 
-            TranslateWordState.Started -> { }
+            TranslateWordState.Started -> {
+                hideFabSave()
+            }
         }
     }
 
@@ -137,6 +153,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         setupAdapter(wordModel)
         setupSound(wordModel.soundPath)
         showText()
+        showFabSave()
     }
 
     private fun renderError(state: TranslateWordState.Error) {
@@ -149,6 +166,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         )
         hideSound()
         showText()
+        hideFabSave()
     }
 
 
@@ -179,15 +197,12 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private fun showLoading() {
         binding.progressBar.visibility = View.VISIBLE
         binding.translateRecyclerView.visibility = View.GONE
-//        binding.saveWordBtn.isClickable = false
-        binding.saveWordBtn.visibility = View.GONE
+        hideFabSave()
     }
 
     private fun showText() {
         binding.progressBar.visibility = View.GONE
         binding.translateRecyclerView.visibility = View.VISIBLE
-//        binding.saveWordBtn.isClickable = true
-        binding.saveWordBtn.visibility = View.VISIBLE
     }
 
     private fun showSound() {
@@ -197,6 +212,14 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private fun hideSound() {
         binding.buttonSound.visibility = View.INVISIBLE
     }
+
+    private fun hideFabSave() {
+        binding.saveWordBtn.hide()
+    }
+    private fun showFabSave() {
+        binding.saveWordBtn.show()
+    }
+
 
     private fun hideKeyboard() {
         val imm =

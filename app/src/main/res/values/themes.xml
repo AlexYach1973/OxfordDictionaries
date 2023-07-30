@@ -30,5 +30,9 @@
         <item name="android:textColor">@color/yellow_dark</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/yellow_dark</item>
+        <item name="backgroundTint">@color/purple_700_transparent</item>
     </style>
 </resources>

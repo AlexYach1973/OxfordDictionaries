@@ -13,6 +13,6 @@
     <color name="yellow_dark">#FFFFFF66</color>
     <color name="yellow_light">#FFFFFFCC</color>
 
-
+    <color name="purple_700_transparent">#993700B3</color>
     <color name="teal_200_transparent">#9903DAC5</color>
 </resources>
