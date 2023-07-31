@@ -12,7 +12,9 @@
     <color name="gray_dark">#FF999999</color>
     <color name="yellow_dark">#FFFFFF66</color>
     <color name="yellow_light">#FFFFFFCC</color>
+    <color name="red_light">#FFAA6666</color>
+    <color name="red_dark">#FFFF0000</color>
 
-    <color name="purple_700_transparent">#993700B3</color>
+    <color name="purple_700_transparent">#AA3700B3</color>
     <color name="teal_200_transparent">#9903DAC5</color>
 </resources>

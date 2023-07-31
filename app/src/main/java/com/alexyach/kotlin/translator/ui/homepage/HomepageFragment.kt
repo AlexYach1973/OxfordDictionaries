@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentHomepageBinding
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
+import com.alexyach.kotlin.translator.ui.quiz.QuizFragment
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 
 class HomepageFragment : Fragment() {
@@ -45,7 +46,10 @@ class HomepageFragment : Fragment() {
             }
 
             quizFragmentBtn.setOnClickListener{
-
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, QuizFragment.newInstance())
+                    .addToBackStack("ListWordsFragment")
+                    .commit()
             }
 
         }

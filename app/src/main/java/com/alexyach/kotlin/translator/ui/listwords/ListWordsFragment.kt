@@ -3,18 +3,18 @@ package com.alexyach.kotlin.translator.ui.listwords
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
+import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentListWordsBinding
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
+import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -38,6 +38,7 @@ class ListWordsFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
         setClickListener()
         observeStateFlow()
     }
@@ -48,8 +49,13 @@ class ListWordsFragment
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {}
             override fun onTextChanged(symbol: CharSequence?, start: Int, before: Int, count: Int) {
+
                 viewModel.searchWord(symbol.toString())
-//                Log.d("myLogs", "onTextChanged: symbol: $symbol")
+
+                // Видаляємо символ пошуку (SEARCH_SYMBOL)
+                if (count == 0) {
+                    viewModel.removeSearchSymbol()
+                }
             }
         })
     }
@@ -98,7 +104,36 @@ class ListWordsFragment
             viewModel.deleteWord(word)
         }
         binding.listWordRecycler.adapter = adapter
+    }
 
+    private fun setupToolbar() {
+        with(binding.toolbarListWords) {
+//            title = "Words"
+            inflateMenu(R.menu.list_words_menu)
+
+            setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.delete_all -> {
+                        viewModel.deleteAll()
+                        true
+                    }
+
+                    /*R.id.to_translate_words -> {
+                        toTranslateWordFragment()
+                        true
+                    }*/
+
+                    else -> false
+                }
+            }
+        }
+    }
+
+    private fun toTranslateWordFragment() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, TranslateFragment.newInstance())
+//            .addToBackStack(null)
+            .commit()
     }
 
     companion object {

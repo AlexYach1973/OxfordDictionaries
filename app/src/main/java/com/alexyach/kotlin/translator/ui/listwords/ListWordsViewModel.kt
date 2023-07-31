@@ -1,6 +1,5 @@
 package com.alexyach.kotlin.translator.ui.listwords
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
+const val SEARCH_SYMBOL = "♥"
 class ListWordsViewModel(database: AppDatabase) : ViewModel() {
 
     private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
@@ -48,16 +48,47 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
         }
     }
 
+    fun deleteAll() {
+        viewModelScope.launch {
+            roomRepository.deleteAll()
+        }
+    }
+
     fun searchWord(symbols: String) {
         val searchListWord = mutableListOf<WordsEntityModel>()
 
+       /* val newSymbol: String = SpannableString(symbols).apply {
+            setSpan(
+//                BackgroundColorSpan(Color.RED),
+                StyleSpan(Typeface.BOLD),
+//                ForegroundColorSpan(Color.RED),
+                0,
+                symbols.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }.toString()*/
+
         listWord.forEach {
             if (it.wordInit.contains(symbols) || it.wordTranslate.contains(symbols)) {
-                searchListWord.add(it)
+
+                searchListWord.add( it.copy(
+                    wordInit = replaceSymbols(it.wordInit, symbols),
+                    wordTranslate = replaceSymbols(it.wordTranslate, symbols)
+                ))
             }
         }
         _listWordsStateFlow.value =  ListWordsState.Success(searchListWord)
     }
+    private fun replaceSymbols(str: String, symbols: String): String {
+        return str.replace(symbols, "$SEARCH_SYMBOL$symbols")
+    }
+    fun removeSearchSymbol() {
+        listWord.forEach {
+            it.wordInit.replace(SEARCH_SYMBOL,"")
+            it.wordTranslate.replace("*","")
+        }
+        _listWordsStateFlow.value =  ListWordsState.Success(listWord)
+    }
+
 
     companion object {
         fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {

@@ -3,6 +3,7 @@ package com.alexyach.kotlin.translator.utils
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.Sense
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
+import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.domain.model.WordsDatabaseModel
 
@@ -79,6 +80,21 @@ fun wordEntityListToWordDatabaseModelList(dataList: List<WordsEntityModel>)
         )
     }
     return wordsDatabaseModel
+}
+
+fun entityListToQuizList(entityDataList: List<WordsEntityModel>) : MutableList<QuizModel> {
+    val quizDataList = mutableListOf<QuizModel>()
+    entityDataList.forEach {
+        quizDataList.add(
+            QuizModel(
+                id = it.id,
+                wordInit = it.wordInit,
+                wordTranslate = it.wordTranslate,
+                isGuess = true
+            )
+        )
+    }
+    return quizDataList
 }
 
 

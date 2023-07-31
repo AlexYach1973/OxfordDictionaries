@@ -15,11 +15,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
+import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
+import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -101,6 +103,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
                     wordTranslateModel
                 )
                 hideFabSave()
+//                toListWordsFragment()
             }
         }
 
@@ -218,6 +221,13 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     }
     private fun showFabSave() {
         binding.saveWordBtn.show()
+    }
+
+    private fun toListWordsFragment() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container, ListWordsFragment.newInstance())
+//            .addToBackStack(null)
+            .commit()
     }
 
 

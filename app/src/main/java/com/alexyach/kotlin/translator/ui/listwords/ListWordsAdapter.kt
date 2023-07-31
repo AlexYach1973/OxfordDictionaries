@@ -1,15 +1,11 @@
 package com.alexyach.kotlin.translator.ui.listwords
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.DatabaseRecyclerItemBinding
-import com.alexyach.kotlin.translator.domain.model.WordsDatabaseModel
 
 class ListWordsAdapter(
     private val dataList: List<WordsEntityModel>,
