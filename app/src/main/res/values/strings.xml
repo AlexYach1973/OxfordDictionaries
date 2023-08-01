@@ -17,4 +17,7 @@
 <!--    Menu-->
     <string name="delete_all">видалити все</string>
     <string name="to_translate_word">до перекладача</string>
+
+<!--    Quiz fragment-->
+    <string name="title_quiz_toolbar">Вгадай невідоме слово</string>
 </resources>

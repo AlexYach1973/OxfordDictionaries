@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
+import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentQuizBinding
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
@@ -56,20 +57,35 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
             }
             .launchIn(lifecycleScope)
 
+        // Count
+        viewModel.countGuessWordFlow
+            .flowWithLifecycle(lifecycle)
+            .onEach {
+                binding.countGuessWord.text = it.toString()
+            }
+            .launchIn(lifecycleScope)
+
+        viewModel.countNoGuessWordFlow
+            .flowWithLifecycle(lifecycle)
+            .onEach {
+                binding.countNoGuessWord.text = it.toString()
+            }
+            .launchIn(lifecycleScope)
 
     }
     private fun responseState(state: UIState<List<QuizModel>>) {
         when(state) {
             is UIState.Success -> renderUi(state.data)
-            is UIState.Error -> {}
-            UIState.Loading -> {}
-            UIState.Started -> {}
+            is UIState.Error -> showError(state.message)
+            UIState.Loading -> showLoading()
+            UIState.Started -> {} //
         }
     }
 
     private fun renderUi(dataList: List<QuizModel>) {
         setupAdapter(dataList)
-//        Log.d("myLogs", "QuizFragment dataList: ${dataList.size}")
+        binding.quizFragmentProgressbar.visibility = View.GONE
+        binding.llQuizFragment.visibility = View.VISIBLE
     }
     private fun showInitWord(word: String) {
         binding.wordQuizTextView.text = word
@@ -82,8 +98,29 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
         binding.quizRecyclerView.adapter = adapter
     }
 
-    private fun setupToolBar() {
+    private fun showError(error: String) {
+        setupAdapter(
+            listOf(
+                QuizModel(
+                    id = 0,
+                    wordInit = error,
+                    wordTranslate = "Помилка зчитування бази даних"
+                )
+            )
+        )
+        binding.quizFragmentProgressbar.visibility = View.GONE
+        binding.llQuizFragment.visibility = View.VISIBLE
+    }
 
+    private fun showLoading() {
+        binding.quizFragmentProgressbar.visibility = View.VISIBLE
+        binding.llQuizFragment.visibility = View.GONE
+    }
+
+    private fun setupToolBar() {
+        with(binding.toolbarQuiz) {
+            title = getString(R.string.title_quiz_toolbar)
+        }
     }
     companion object {
         fun newInstance() = QuizFragment()

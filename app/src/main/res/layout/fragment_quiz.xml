@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.quiz.QuizFragment">
+
+    <FrameLayout
+        android:id="@+id/quizFragmentProgressbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarQuiz"
@@ -17,6 +31,7 @@
         />
 
     <LinearLayout
+        android:id="@+id/llQuizFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/gradient_translate_fragment"
@@ -25,15 +40,51 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/wordQuizTextView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="4dp"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            tools:text="Quiz"/>
+            android:paddingTop="4dp">
+
+            <TextView
+                android:id="@+id/countNoGuessWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@color/red_light"
+                android:textColor="@color/red_dark"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/wordQuizTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                tools:text="Quiz"/>
+
+            <TextView
+                android:id="@+id/countGuessWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="10"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@color/green_light"
+                android:textColor="@color/green_dark"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/quizRecyclerView"

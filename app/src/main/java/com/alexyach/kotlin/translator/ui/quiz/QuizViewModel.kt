@@ -10,8 +10,10 @@ import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.entityListToQuizList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
@@ -26,6 +28,14 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private var _initWordFlow = MutableStateFlow(QuizModel(0, "", "", true))
     var initWordFlow : StateFlow<QuizModel> = _initWordFlow
 
+    // Count
+    private var _countGuessWordFlow = MutableStateFlow(0)
+    val countGuessWordFlow: StateFlow<Int> = _countGuessWordFlow
+
+    private var _countNoGuessWordFlow = MutableStateFlow(0)
+    val countNoGuessWordFlow: StateFlow<Int> = _countNoGuessWordFlow
+
+
     private var quizListWords = mutableListOf<QuizModel>()
 
     init {
@@ -35,9 +45,11 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
 
     fun guessWord(guessList: List<QuizModel>, word: QuizModel) {
         if (word.id == _initWordFlow.value.id) {
+            _countGuessWordFlow.value++
             toTrueIsGuess()
             selectionWords()
         } else {
+            _countNoGuessWordFlow.value--
             guessList.filter { it.id == word.id }.forEach { it.isGuess = false }
         }
     }
@@ -52,6 +64,7 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
         viewModelScope.launch {
             roomRepository.getAll()
                 .flowOn(Dispatchers.IO)
+                .catch { _listWordsStateFlow.value = UIState.Error(it.message ?: "Error") }
                 .collect {
                     quizListWords = entityListToQuizList(it)
                     selectionWords()
@@ -62,11 +75,11 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private fun selectionWords() {
         quizListWords.shuffle()
 
-        if (quizListWords.size < 8) {
+        if (quizListWords.size < 10) {
             randomWords(quizListWords)
         } else {
             val newDataList: MutableList<QuizModel> = mutableListOf()
-            for (i in 0..7) {
+            for (i in 0..9) {
                 newDataList.add(quizListWords[i])
             }
             randomWords(newDataList)
