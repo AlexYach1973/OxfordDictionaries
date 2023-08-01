@@ -3,7 +3,8 @@ package com.alexyach.kotlin.translator.data.retrofit
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
 import com.alexyach.kotlin.translator.domain.model.Language
-import com.alexyach.kotlin.translator.ui.translate.TranslateWordState
+import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
+import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.wordDtoToWordTranslateModel
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
@@ -34,13 +35,13 @@ class RetrofitImpl : ITranslateRepository {
                                 APP_KEY, word)
 
                         if (response.body() == null) {
-                            emit(TranslateWordState.Error(Exception("Немає такого слова")))
+                            emit(UIState.Error("Немає такого слова"))
                         } else {
                             emit(responseByCode(response))
                         }
 
                     } catch (e: Exception) {
-                        TranslateWordState.Error(Exception(e))
+                        UIState.Error(e.message ?: "???")
                     }
 // Log.d("myLogs", "RetrofitImpl Thread: ${Thread.currentThread().name}") worker-1
                 }.flowOn(Dispatchers.IO)
@@ -55,31 +56,31 @@ class RetrofitImpl : ITranslateRepository {
                                 APP_KEY, word)
 
                         if (response.body() == null) {
-                            emit(TranslateWordState.Error(Exception("Немає такого слова")))
+                            emit(UIState.Error("Немає такого слова"))
                         } else {
                             emit(responseByCode(response))
                         }
 
                     } catch (e: Exception) {
-                        TranslateWordState.Error(Exception(e))
+                        UIState.Error(e.message ?: "???")
                     }
                 }.flowOn(Dispatchers.IO)
             }
         }
 
-    private fun responseByCode(response: Response<WordTranslate>): TranslateWordState {
+    private fun responseByCode(response: Response<WordTranslate>): UIState<WordTranslateModel> {
         when (response.code()) {
             200 -> {
-                return TranslateWordState.Success(wordDtoToWordTranslateModel(response.body()!!))
+                return UIState.Success(wordDtoToWordTranslateModel(response.body()!!))
             }
-            404 -> return TranslateWordState.Error(Exception("Не знайдено"))
-            414 -> return TranslateWordState.Error(Exception("URI запит занадто довгий"))
-            500 -> return TranslateWordState.Error(Exception("Внутрішня помилка сервера"))
-            502 -> return TranslateWordState.Error(Exception("Поганий шлюз"))
-            503 -> return TranslateWordState.Error(Exception("Сервіс недоступний"))
-            504 -> return TranslateWordState.Error(Exception("Час очікування шлюзу"))
+            404 -> return UIState.Error("Не знайдено")
+            414 -> return UIState.Error("URI запит занадто довгий")
+            500 -> return UIState.Error("Внутрішня помилка сервера")
+            502 -> return UIState.Error("Поганий шлюз")
+            503 -> return UIState.Error("Сервіс недоступний")
+            504 -> return UIState.Error("Час очікування шлюзу")
         }
-        return TranslateWordState.Error(Exception("Не зрозуміла похибка"))
+        return UIState.Error("Не зрозуміла похибка")
     }
 }
 

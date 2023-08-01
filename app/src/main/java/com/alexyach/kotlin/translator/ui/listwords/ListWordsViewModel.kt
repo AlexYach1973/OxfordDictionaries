@@ -7,6 +7,7 @@ import com.alexyach.kotlin.translator.data.local.DatabaseImpl
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
+import com.alexyach.kotlin.translator.ui.base.UIState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,9 +19,9 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
 
     private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
 
-    private var _listWordsStateFlow : MutableStateFlow<ListWordsState>
-            = MutableStateFlow(ListWordsState.Started)
-    val listWordsStateFlow: StateFlow<ListWordsState> = _listWordsStateFlow
+    private var _listWordsStateFlow : MutableStateFlow<UIState<List<WordsEntityModel>>>
+            = MutableStateFlow(UIState.Started)
+    val listWordsStateFlow: StateFlow<UIState<List<WordsEntityModel>>> = _listWordsStateFlow
 
     private var listWord = mutableListOf<WordsEntityModel>()
 
@@ -30,14 +31,14 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
     }
 
     private fun getListWords() {
-        _listWordsStateFlow.value = ListWordsState.Loading
+        _listWordsStateFlow.value = UIState.Loading
 
         viewModelScope.launch {
             roomRepository.getAll()
                 .flowOn(Dispatchers.IO)
                 .collect {
                     listWord = it.toMutableList()
-                    _listWordsStateFlow.value =  ListWordsState.Success(it)
+                    _listWordsStateFlow.value =  UIState.Success(it)
                 }
         }
     }
@@ -76,7 +77,7 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
                 ))
             }
         }
-        _listWordsStateFlow.value =  ListWordsState.Success(searchListWord)
+        _listWordsStateFlow.value =  UIState.Success(searchListWord)
     }
     private fun replaceSymbols(str: String, symbols: String): String {
         return str.replace(symbols, "$SEARCH_SYMBOL$symbols")
@@ -86,7 +87,7 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
             it.wordInit.replace(SEARCH_SYMBOL,"")
             it.wordTranslate.replace("*","")
         }
-        _listWordsStateFlow.value =  ListWordsState.Success(listWord)
+        _listWordsStateFlow.value =  UIState.Success(listWord)
     }
 
 

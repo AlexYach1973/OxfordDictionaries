@@ -1,6 +1,5 @@
 package com.alexyach.kotlin.translator.data.local
 
-import android.util.Log
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository

@@ -14,6 +14,7 @@ import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentListWordsBinding
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
+import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -70,12 +71,12 @@ class ListWordsFragment
             .launchIn(lifecycleScope)
     }
 
-    private fun responseState(state: ListWordsState) {
+    private fun responseState(state: UIState<List<WordsEntityModel>>) {
         when(state) {
-            is ListWordsState.Success -> renderDataList(state.dataList)
-            is ListWordsState.Error -> showError(state.error.message)
-            ListWordsState.Loading -> showLoading()
-            ListWordsState.Started -> {}
+            is UIState.Success -> renderDataList(state.data)
+            is UIState.Error -> showError(state.message)
+            UIState.Loading -> showLoading()
+            UIState.Started -> {}
         }
     }
 

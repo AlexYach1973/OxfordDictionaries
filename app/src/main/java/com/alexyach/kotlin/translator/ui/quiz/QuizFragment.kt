@@ -1,7 +1,6 @@
 package com.alexyach.kotlin.translator.ui.quiz
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
-import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentQuizBinding
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
-import com.alexyach.kotlin.translator.ui.listwords.ListWordsState
+import com.alexyach.kotlin.translator.ui.base.UIState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -60,12 +58,12 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
 
 
     }
-    private fun responseState(state: QuizState) {
+    private fun responseState(state: UIState<List<QuizModel>>) {
         when(state) {
-            is QuizState.Success -> renderUi(state.dataList)
-            is QuizState.Error -> {}
-            QuizState.Loading -> {}
-            QuizState.Started -> {}
+            is UIState.Success -> renderUi(state.data)
+            is UIState.Error -> {}
+            UIState.Loading -> {}
+            UIState.Started -> {}
         }
     }
 

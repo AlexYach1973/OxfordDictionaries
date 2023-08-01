@@ -7,19 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.alexyach.kotlin.translator.data.local.DatabaseImpl
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
-import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
 import com.alexyach.kotlin.translator.data.retrofit.RetrofitImpl
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
+import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
+import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.NO_TRANSLATE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TranslateViewModel(database: AppDatabase) : ViewModel() {
@@ -29,9 +29,9 @@ class TranslateViewModel(database: AppDatabase) : ViewModel() {
 
 
     /** StateFlow */
-    private val _translateWordStateFlow: MutableStateFlow<TranslateWordState> =
-        MutableStateFlow(TranslateWordState.Started)
-    val translateWordStateFlow: StateFlow<TranslateWordState> = _translateWordStateFlow
+    private val _translateWordStateFlow: MutableStateFlow<UIState<WordTranslateModel>> =
+        MutableStateFlow(UIState.Started)
+    val translateWordStateFlow: StateFlow<UIState<WordTranslateModel>> = _translateWordStateFlow
 
     private val _soundPathStateFlow: MutableStateFlow<String?> = MutableStateFlow(null)
     val soundPathStateFlow: StateFlow<String?> = _soundPathStateFlow
@@ -46,7 +46,7 @@ class TranslateViewModel(database: AppDatabase) : ViewModel() {
         getListWordsFromRoom()
     }
     fun getTranslateWordFlow(word: String, language: Language) = viewModelScope.launch {
-        _translateWordStateFlow.value = TranslateWordState.Loading
+        _translateWordStateFlow.value = UIState.Loading
 
         remoteRepository.getTranslateWordAsync(word, language)
             .catch { Log.d("myLogs", "TranslateViewModel: error") }

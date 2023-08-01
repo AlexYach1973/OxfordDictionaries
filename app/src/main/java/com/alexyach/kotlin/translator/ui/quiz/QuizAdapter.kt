@@ -1,11 +1,8 @@
 package com.alexyach.kotlin.translator.ui.quiz
 
-import android.content.res.Resources
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.QuizRecyclerItemBinding

@@ -7,6 +7,7 @@ import com.alexyach.kotlin.translator.data.local.DatabaseImpl
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.model.QuizModel
+import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.entityListToQuizList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +19,9 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
 
     private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
 
-    private var _listWordsStateFlow : MutableStateFlow<QuizState>
-            = MutableStateFlow(QuizState.Started)
-    val listWordsStateFlow: StateFlow<QuizState> = _listWordsStateFlow
+    private var _listWordsStateFlow : MutableStateFlow<UIState<List<QuizModel>>>
+            = MutableStateFlow(UIState.Started)
+    val listWordsStateFlow: StateFlow<UIState<List<QuizModel>>> = _listWordsStateFlow
 
     private var _initWordFlow = MutableStateFlow(QuizModel(0, "", "", true))
     var initWordFlow : StateFlow<QuizModel> = _initWordFlow
@@ -46,7 +47,7 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     }
 
     private fun getListWords() {
-        _listWordsStateFlow.value = QuizState.Loading
+        _listWordsStateFlow.value = UIState.Loading
 
         viewModelScope.launch {
             roomRepository.getAll()
@@ -75,7 +76,7 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private fun randomWords(dataList: MutableList<QuizModel>) {
         _initWordFlow.value = dataList[0]
         dataList.shuffle()
-        _listWordsStateFlow.value =  QuizState.Success(dataList)
+        _listWordsStateFlow.value =  UIState.Success(dataList)
     }
 
 

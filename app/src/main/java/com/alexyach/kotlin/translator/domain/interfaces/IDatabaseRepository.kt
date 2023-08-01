@@ -1,7 +1,6 @@
 package com.alexyach.kotlin.translator.domain.interfaces
 
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
-import com.alexyach.kotlin.translator.domain.model.WordsDatabaseModel
 import kotlinx.coroutines.flow.Flow
 
 interface IDatabaseRepository {

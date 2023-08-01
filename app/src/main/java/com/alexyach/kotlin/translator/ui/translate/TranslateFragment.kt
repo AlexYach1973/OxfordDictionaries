@@ -16,11 +16,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
-import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
+import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -109,8 +109,8 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
         // Init Word Edit Text
         binding.etInitialWord.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {} // Не використовуєм
+            override fun afterTextChanged(p0: Editable?) {} // Не використовуєм
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 hideFabSave()
@@ -125,22 +125,22 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
             else -> {}
         }
     }
-    private fun responseState(state: TranslateWordState) {
+    private fun responseState(state: UIState<WordTranslateModel>) {
         when (state) {
-            is TranslateWordState.Success -> {
-                renderSuccessData(state.wordModel)
+            is UIState.Success -> {
+                renderSuccessData(state.data)
             }
 
-            is TranslateWordState.Error -> {
-                renderError(state)
+            is UIState.Error -> {
+                renderError(state.message)
             }
 
-            TranslateWordState.Loading -> {
+            UIState.Loading -> {
                 showLoading()
                 hideSound()
             }
 
-            TranslateWordState.Started -> {
+            UIState.Started -> {
                 hideFabSave()
             }
         }
@@ -159,11 +159,11 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         showFabSave()
     }
 
-    private fun renderError(state: TranslateWordState.Error) {
+    private fun renderError(message: String) {
         textShow = ""
         setupAdapter(
             WordTranslateModel(
-                listOf("${state.error.message}"),
+                listOf(message),
                 listOf("")
             )
         )
