@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -22,6 +21,7 @@ import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
+import com.alexyach.kotlin.translator.utils.viewModelCreator
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -37,10 +37,10 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var adapter: TranslateAdapter
     private var wordTranslateModel = WordTranslateModel()
 
-    override val viewModel: TranslateViewModel by lazy {
-        ViewModelProvider(this, TranslateViewModel.getViewModelFactory(
+    override val viewModel: TranslateViewModel by viewModelCreator {
+        TranslateViewModel(
             (requireActivity().application as App).database
-        ))[TranslateViewModel::class.java]
+        )
     }
 
     override fun getViewBinding(

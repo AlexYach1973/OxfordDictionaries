@@ -1,7 +1,6 @@
 package com.alexyach.kotlin.translator.ui.listwords
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.alexyach.kotlin.translator.data.local.DatabaseImpl
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
@@ -88,22 +87,6 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
             it.wordTranslate.replace("*","")
         }
         _listWordsStateFlow.value =  UIState.Success(listWord)
-    }
-
-
-    companion object {
-        fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
-            val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(ListWordsViewModel::class.java)) {
-                        return ListWordsViewModel(database) as T
-                    } else {
-                        throw IllegalArgumentException("Unknown ViewModel class")
-                    }
-                }
-            }
-            return factory
-        }
     }
 }
 

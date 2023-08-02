@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -16,18 +15,17 @@ import com.alexyach.kotlin.translator.databinding.FragmentListWordsBinding
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
+import com.alexyach.kotlin.translator.utils.viewModelCreator
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class ListWordsFragment
     : BaseFragment<FragmentListWordsBinding, ListWordsViewModel>() {
 
-    override val viewModel: ListWordsViewModel by lazy {
-        ViewModelProvider(
-            this, ListWordsViewModel.getViewModelFactory(
-                (requireActivity().application as App).database
-            )
-        )[ListWordsViewModel::class.java]
+    override val viewModel: ListWordsViewModel by viewModelCreator {
+        ListWordsViewModel(
+            (requireActivity().application as App).database
+        )
     }
 
     private lateinit var adapter: ListWordsAdapter
