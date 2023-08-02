@@ -118,7 +118,11 @@ class TranslateViewModel(database: AppDatabase) : ViewModel() {
         fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
             val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return TranslateViewModel(database) as T
+                    if (modelClass.isAssignableFrom(TranslateViewModel::class.java)) {
+                        return TranslateViewModel(database) as T
+                    } else {
+                        throw IllegalArgumentException("Unknown ViewModel class")
+                    }
                 }
             }
             return factory

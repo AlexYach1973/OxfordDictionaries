@@ -10,7 +10,6 @@ import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.entityListToQuizList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -97,7 +96,11 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
         fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
             val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return QuizViewModel(database) as T
+                    if (modelClass.isAssignableFrom(QuizViewModel::class.java)) {
+                        return QuizViewModel(database) as T
+                    } else {
+                        throw IllegalArgumentException("Unknown ViewModel class")
+                    }
                 }
             }
             return factory

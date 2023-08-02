@@ -3,6 +3,7 @@ package com.alexyach.kotlin.translator.ui.quiz
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.QuizRecyclerItemBinding
@@ -37,16 +38,18 @@ class QuizAdapter(
 
             if (item.isGuess) {
                 binding.llQuizRecyclerItem.background =
-                    itemView.context.resources.getDrawable(R.drawable.gradient_cardview, null)
+                    ResourcesCompat.getDrawable(
+                        itemView.context.resources, R.drawable.gradient_cardview, null)
             } else {
                 binding.llQuizRecyclerItem.background =
-                    itemView.context.resources.getDrawable(R.drawable.gradient_error, null)
+                ResourcesCompat.getDrawable(
+                    itemView.context.resources, R.drawable.gradient_error, null)
             }
-//            notifyDataSetChanged()
 
             binding.root.setOnClickListener {
                 click(item)
-                notifyDataSetChanged()
+//                notifyDataSetChanged()
+                notifyItemChanged(adapterPosition)
             }
         }
     }

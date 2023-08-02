@@ -95,7 +95,11 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
         fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
             val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ListWordsViewModel(database) as T
+                    if (modelClass.isAssignableFrom(ListWordsViewModel::class.java)) {
+                        return ListWordsViewModel(database) as T
+                    } else {
+                        throw IllegalArgumentException("Unknown ViewModel class")
+                    }
                 }
             }
             return factory
