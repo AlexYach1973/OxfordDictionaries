@@ -2,15 +2,11 @@ package com.alexyach.kotlin.translator.ui.translate
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
-import com.alexyach.kotlin.translator.data.retrofit.RetrofitImpl
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
-import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
+import com.alexyach.kotlin.translator.domain.interfaces.IRemoteRepository
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.UIState
@@ -21,12 +17,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TranslateViewModel(database: AppDatabase) : ViewModel() {
-
-    private val remoteRepository: ITranslateRepository = RetrofitImpl()
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
-
+class TranslateViewModel @Inject constructor(
+    private val roomRepository: IDatabaseRepository,
+    private val remoteRepository: IRemoteRepository
+) : ViewModel() {
 
     /** StateFlow */
     private val _translateWordStateFlow: MutableStateFlow<UIState<WordTranslateModel>> =
@@ -111,21 +107,6 @@ class TranslateViewModel(database: AppDatabase) : ViewModel() {
 
         if (!soundPath.isNullOrEmpty()) {
             _soundPathStateFlow.value = soundPath
-        }
-    }
-
-    companion object {
-        fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
-            val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(TranslateViewModel::class.java)) {
-                        return TranslateViewModel(database) as T
-                    } else {
-                        throw IllegalArgumentException("Unknown ViewModel class")
-                    }
-                }
-            }
-            return factory
         }
     }
 }

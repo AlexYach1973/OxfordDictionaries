@@ -1,6 +1,7 @@
 package com.alexyach.kotlin.translator.ui.translate
 
 import android.app.Activity
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -24,6 +24,7 @@ import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         TranslateViewModel>() {
@@ -37,17 +38,19 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var adapter: TranslateAdapter
     private var wordTranslateModel = WordTranslateModel()
 
-    override val viewModel: TranslateViewModel by lazy {
-        ViewModelProvider(this, TranslateViewModel.getViewModelFactory(
-            (requireActivity().application as App).database
-        ))[TranslateViewModel::class.java]
-    }
+    @Inject
+    override lateinit var viewModel: TranslateViewModel
 
     override fun getViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentTranslateBinding.inflate(inflater, container, false)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Dagger
+        (requireActivity().application as App).appComponent.inject(this)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

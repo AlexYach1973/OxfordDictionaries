@@ -1,23 +1,22 @@
 package com.alexyach.kotlin.translator.ui.listwords
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.ui.base.UIState
+import com.alexyach.kotlin.translator.utils.SEARCH_SYMBOL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-const val SEARCH_SYMBOL = "♥"
-class ListWordsViewModel(database: AppDatabase) : ViewModel() {
-
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
+//const val SEARCH_SYMBOL = "♥"
+class ListWordsViewModel @Inject constructor (
+    private val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
     private var _listWordsStateFlow : MutableStateFlow<UIState<List<WordsEntityModel>>>
             = MutableStateFlow(UIState.Started)
@@ -88,22 +87,6 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
             it.wordTranslate.replace("*","")
         }
         _listWordsStateFlow.value =  UIState.Success(listWord)
-    }
-
-
-    companion object {
-        fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
-            val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(ListWordsViewModel::class.java)) {
-                        return ListWordsViewModel(database) as T
-                    } else {
-                        throw IllegalArgumentException("Unknown ViewModel class")
-                    }
-                }
-            }
-            return factory
-        }
     }
 }
 

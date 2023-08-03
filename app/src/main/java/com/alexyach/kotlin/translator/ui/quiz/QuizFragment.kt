@@ -1,10 +1,10 @@
 package com.alexyach.kotlin.translator.ui.quiz
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -15,25 +15,25 @@ import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
 
     private lateinit var adapter: QuizAdapter
 
-    override val viewModel: QuizViewModel by lazy {
-        ViewModelProvider(
-            this,
-            QuizViewModel.getViewModelFactory(
-                (requireActivity().application as App).database
-            )
-        )[QuizViewModel::class.java]
-    }
+    @Inject
+    override lateinit var viewModel: QuizViewModel
 
     override fun getViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentQuizBinding.inflate(inflater, container, false)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Dagger
+        (requireActivity().application as App).appComponent.inject(this)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

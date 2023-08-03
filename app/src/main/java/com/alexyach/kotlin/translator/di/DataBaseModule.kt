@@ -1,0 +1,26 @@
+package com.alexyach.kotlin.translator.di
+
+import android.content.Context
+import com.alexyach.kotlin.translator.data.local.DatabaseImpl
+import com.alexyach.kotlin.translator.data.local.database.AppDatabase
+import com.alexyach.kotlin.translator.data.local.database.WordsDao
+import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
+
+@Module
+class DataBaseModule {
+
+    @Singleton
+    @Provides
+    fun database(context: Context): AppDatabase =
+        AppDatabase.getDatabase(context)
+
+    @Singleton
+    @Provides
+    fun wordsDao(database: AppDatabase): WordsDao =
+        database.getWordsDao()
+
+}

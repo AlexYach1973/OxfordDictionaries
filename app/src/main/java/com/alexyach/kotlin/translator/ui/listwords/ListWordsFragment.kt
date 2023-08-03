@@ -1,12 +1,12 @@
 package com.alexyach.kotlin.translator.ui.listwords
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -18,17 +18,13 @@ import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class ListWordsFragment
     : BaseFragment<FragmentListWordsBinding, ListWordsViewModel>() {
 
-    override val viewModel: ListWordsViewModel by lazy {
-        ViewModelProvider(
-            this, ListWordsViewModel.getViewModelFactory(
-                (requireActivity().application as App).database
-            )
-        )[ListWordsViewModel::class.java]
-    }
+    @Inject
+    override lateinit var viewModel: ListWordsViewModel
 
     private lateinit var adapter: ListWordsAdapter
     override fun getViewBinding(
@@ -36,6 +32,11 @@ class ListWordsFragment
         container: ViewGroup?
     ) = FragmentListWordsBinding.inflate(inflater, container, false)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Dagger
+        (requireActivity().application as App).appComponent.inject(this)
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

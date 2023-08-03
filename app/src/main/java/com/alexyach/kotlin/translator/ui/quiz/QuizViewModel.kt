@@ -1,10 +1,7 @@
 package com.alexyach.kotlin.translator.ui.quiz
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.UIState
@@ -15,10 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class QuizViewModel(database: AppDatabase) : ViewModel() {
-
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
+class QuizViewModel @Inject constructor(
+    private val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
     private var _listWordsStateFlow : MutableStateFlow<UIState<List<QuizModel>>>
             = MutableStateFlow(UIState.Started)
@@ -89,21 +87,5 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
         _initWordFlow.value = dataList[0]
         dataList.shuffle()
         _listWordsStateFlow.value =  UIState.Success(dataList)
-    }
-
-
-    companion object {
-        fun getViewModelFactory(database: AppDatabase): ViewModelProvider.Factory {
-            val factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(QuizViewModel::class.java)) {
-                        return QuizViewModel(database) as T
-                    } else {
-                        throw IllegalArgumentException("Unknown ViewModel class")
-                    }
-                }
-            }
-            return factory
-        }
     }
 }
