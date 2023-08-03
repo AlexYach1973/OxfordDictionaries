@@ -34,7 +34,7 @@ class ListWordsFragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        // Dagger
+        /** Dagger **/
         (requireActivity().application as App).appComponent.inject(this)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

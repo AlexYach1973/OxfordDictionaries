@@ -1,4 +1,4 @@
-package com.alexyach.kotlin.translator.di
+package com.alexyach.kotlin.translator.di.modules
 
 import android.content.Context
 import com.alexyach.kotlin.translator.data.local.DatabaseImpl

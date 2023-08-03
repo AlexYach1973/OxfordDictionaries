@@ -1,9 +1,12 @@
 package com.alexyach.kotlin.translator.di
 
 import android.content.Context
+import com.alexyach.kotlin.translator.di.modules.AppSubcomponent
+import com.alexyach.kotlin.translator.di.modules.DataBaseModule
+import com.alexyach.kotlin.translator.di.modules.NetworkModule
+import com.alexyach.kotlin.translator.di.modules.RepositoryModule
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
 import com.alexyach.kotlin.translator.ui.quiz.QuizFragment
-import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -13,7 +16,8 @@ import javax.inject.Singleton
     modules = [
         DataBaseModule::class,
         RepositoryModule::class,
-        NetworkModule::class
+        NetworkModule::class,
+        AppSubcomponent::class
     ]
 )
 interface AppComponent {
@@ -23,7 +27,12 @@ interface AppComponent {
         fun create(@BindsInstance context: Context): AppComponent
     }
 
+    fun remoteComponent(): RemoteComponent.Factory
+
     fun inject(quizFragment: QuizFragment)
     fun inject(listWordsFragment: ListWordsFragment)
-    fun inject(translateFragment: TranslateFragment)
+
+
+
+//    fun inject(translateFragment: TranslateFragment)
 }

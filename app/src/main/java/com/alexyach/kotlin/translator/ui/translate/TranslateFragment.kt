@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
+import com.alexyach.kotlin.translator.di.RemoteComponent
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
@@ -38,6 +39,10 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var adapter: TranslateAdapter
     private var wordTranslateModel = WordTranslateModel()
 
+    // Reference to the Login graph
+    // SubComponent RemoteComponent{}
+    lateinit var remoteComponent: RemoteComponent
+
     @Inject
     override lateinit var viewModel: TranslateViewModel
 
@@ -48,8 +53,12 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        // Dagger
-        (requireActivity().application as App).appComponent.inject(this)
+
+        /** Dagger SubComponent **/
+        remoteComponent =
+        (requireActivity().application as App).appComponent
+            .remoteComponent().create()
+        remoteComponent.inject(this)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

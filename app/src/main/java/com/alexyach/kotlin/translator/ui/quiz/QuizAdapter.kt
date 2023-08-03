@@ -16,7 +16,8 @@ class QuizAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuizViewHolder {
         val binding = QuizRecyclerItemBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false)
+            LayoutInflater.from(parent.context), parent, false
+        )
 
         return QuizViewHolder(binding.root)
     }
@@ -39,17 +40,20 @@ class QuizAdapter(
             if (item.isGuess) {
                 binding.llQuizRecyclerItem.background =
                     ResourcesCompat.getDrawable(
-                        itemView.context.resources, R.drawable.gradient_cardview, null)
+                        itemView.context.resources, R.drawable.gradient_cardview, null
+                    )
             } else {
                 binding.llQuizRecyclerItem.background =
-                ResourcesCompat.getDrawable(
-                    itemView.context.resources, R.drawable.gradient_error, null)
+                    ResourcesCompat.getDrawable(
+                        itemView.context.resources, R.drawable.gradient_error, null
+                    )
             }
 
             binding.root.setOnClickListener {
-                click(item)
-//                notifyDataSetChanged()
-                notifyItemChanged(adapterPosition)
+                if (item.isGuess) {
+                    click(item)
+                    notifyItemChanged(adapterPosition)
+                }
             }
         }
     }

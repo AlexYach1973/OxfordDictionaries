@@ -1,4 +1,4 @@
-package com.alexyach.kotlin.translator.di
+package com.alexyach.kotlin.translator.di.modules
 
 import com.alexyach.kotlin.translator.utils.BASE_URL
 import com.google.gson.Gson
