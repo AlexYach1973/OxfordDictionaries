@@ -1,11 +1,8 @@
 package com.alexyach.kotlin.translator.di.modules
 
 import android.content.Context
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsDao
-import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

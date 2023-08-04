@@ -11,7 +11,6 @@ import javax.inject.Singleton
 
 @Module
 class NetworkModule {
-
     @Provides
     @Singleton
     fun provideGson(): Gson =

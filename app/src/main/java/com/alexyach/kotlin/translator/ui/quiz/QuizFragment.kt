@@ -78,7 +78,7 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
             is UIState.Success -> renderUi(state.data)
             is UIState.Error -> showError(state.message)
             UIState.Loading -> showLoading()
-            UIState.Started -> {} //
+            UIState.Started -> {} // Started state
         }
     }
 

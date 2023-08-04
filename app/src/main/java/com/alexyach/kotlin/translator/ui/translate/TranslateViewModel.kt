@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
+import com.alexyach.kotlin.translator.di.FragmentScope
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.interfaces.IRemoteRepository
 import com.alexyach.kotlin.translator.domain.model.Language
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@FragmentScope
 class TranslateViewModel @Inject constructor(
     private val roomRepository: IDatabaseRepository,
     private val remoteRepository: IRemoteRepository

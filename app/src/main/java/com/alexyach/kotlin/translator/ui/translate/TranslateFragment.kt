@@ -39,8 +39,8 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var adapter: TranslateAdapter
     private var wordTranslateModel = WordTranslateModel()
 
-    // Reference to the Login graph
-    // SubComponent RemoteComponent{}
+    /** Reference to graph
+     SubComponent RemoteComponent{} **/
     lateinit var remoteComponent: RemoteComponent
 
     @Inject
@@ -183,15 +183,6 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         showText()
         hideFabSave()
     }
-
-
-    // Log
-//        Log.d("myLogs", "lexicalEntries: ${wordDto.results[0].lexicalEntries.size}")
-//        Log.d("myLogs", "entries: ${wordDto.results[0].lexicalEntries[0].entries.size}")
-//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses.size}")
-//        Log.d("myLogs", "translations: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].translations.size}")
-//        Log.d("myLogs", "examples: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples.size}")
-//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples[0].text}")
 
     private fun setupSound(soundPath: String) {
         if (!soundPath.isNullOrEmpty()) {

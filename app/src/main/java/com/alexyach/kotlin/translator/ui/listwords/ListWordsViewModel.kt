@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-//const val SEARCH_SYMBOL = "♥"
 class ListWordsViewModel @Inject constructor (
     private val roomRepository: IDatabaseRepository
 ) : ViewModel() {
@@ -56,16 +54,6 @@ class ListWordsViewModel @Inject constructor (
 
     fun searchWord(symbols: String) {
         val searchListWord = mutableListOf<WordsEntityModel>()
-
-       /* val newSymbol: String = SpannableString(symbols).apply {
-            setSpan(
-//                BackgroundColorSpan(Color.RED),
-                StyleSpan(Typeface.BOLD),
-//                ForegroundColorSpan(Color.RED),
-                0,
-                symbols.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }.toString()*/
 
         listWord.forEach {
             if (it.wordInit.contains(symbols) || it.wordTranslate.contains(symbols)) {
