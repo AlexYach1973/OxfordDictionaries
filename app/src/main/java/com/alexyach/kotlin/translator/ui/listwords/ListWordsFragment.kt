@@ -6,27 +6,26 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.databinding.FragmentListWordsBinding
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.translate.TranslateFragment
-import com.alexyach.kotlin.translator.utils.viewModelCreator
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ListWordsFragment
     : BaseFragment<FragmentListWordsBinding, ListWordsViewModel>() {
 
-    override val viewModel: ListWordsViewModel by viewModelCreator {
-        ListWordsViewModel(
-            (requireActivity().application as App).database
-        )
-    }
+    override val viewModel by  viewModels<ListWordsViewModel>()
 
     private lateinit var adapter: ListWordsAdapter
     override fun getViewBinding(

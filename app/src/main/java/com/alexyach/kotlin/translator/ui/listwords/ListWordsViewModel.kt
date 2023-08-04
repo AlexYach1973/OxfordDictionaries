@@ -2,21 +2,22 @@ package com.alexyach.kotlin.translator.ui.listwords
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.ui.base.UIState
+import com.alexyach.kotlin.translator.utils.SEARCH_SYMBOL
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-const val SEARCH_SYMBOL = "♥"
-class ListWordsViewModel(database: AppDatabase) : ViewModel() {
-
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
+@HiltViewModel
+class ListWordsViewModel @Inject constructor(
+    val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
     private var _listWordsStateFlow : MutableStateFlow<UIState<List<WordsEntityModel>>>
             = MutableStateFlow(UIState.Started)
@@ -56,16 +57,6 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
 
     fun searchWord(symbols: String) {
         val searchListWord = mutableListOf<WordsEntityModel>()
-
-       /* val newSymbol: String = SpannableString(symbols).apply {
-            setSpan(
-//                BackgroundColorSpan(Color.RED),
-                StyleSpan(Typeface.BOLD),
-//                ForegroundColorSpan(Color.RED),
-                0,
-                symbols.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }.toString()*/
 
         listWord.forEach {
             if (it.wordInit.contains(symbols) || it.wordTranslate.contains(symbols)) {

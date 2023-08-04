@@ -4,27 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentQuizBinding
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
-import com.alexyach.kotlin.translator.utils.viewModelCreator
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
 
     private lateinit var adapter: QuizAdapter
 
-    override val viewModel: QuizViewModel by viewModelCreator {
-        QuizViewModel(
-            (requireActivity().application as App).database
-        )
-    }
+    override val viewModel by viewModels<QuizViewModel>()
 
     override fun getViewBinding(
         inflater: LayoutInflater,

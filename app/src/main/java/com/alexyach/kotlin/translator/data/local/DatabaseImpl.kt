@@ -1,31 +1,34 @@
 package com.alexyach.kotlin.translator.data.local
 
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
+import com.alexyach.kotlin.translator.data.local.database.WordsDao
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DatabaseImpl(
-    private val appDatabase: AppDatabase
+@Singleton
+class DatabaseImpl @Inject constructor(
+    val wordsDao: WordsDao
 ) : IDatabaseRepository {
     override fun getAll(): Flow<List<WordsEntityModel>> {
-        return appDatabase.getWordsDao().getAll()
+        return wordsDao.getAll()
     }
 
     override fun getTranslateByWord(word: String): Flow<WordsEntityModel> {
-        return appDatabase.getWordsDao().getTranslateByWords(word)
+        return wordsDao.getTranslateByWords(word)
     }
 
     override suspend fun insert(word: WordsEntityModel) {
-        appDatabase.getWordsDao().insert(word)
+        wordsDao.insert(word)
     }
 
     override suspend fun delete(word: WordsEntityModel) {
-        appDatabase.getWordsDao().delete(word)
+        wordsDao.delete(word)
     }
 
     override suspend fun deleteAll() {
-        appDatabase.getWordsDao().deleteAll()
+        wordsDao.deleteAll()
     }
 
 }

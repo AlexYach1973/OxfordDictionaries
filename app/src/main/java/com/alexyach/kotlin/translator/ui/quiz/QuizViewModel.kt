@@ -2,22 +2,23 @@ package com.alexyach.kotlin.translator.ui.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.utils.entityListToQuizList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class QuizViewModel(database: AppDatabase) : ViewModel() {
-
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
+@HiltViewModel
+class QuizViewModel @Inject constructor(
+    val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
     private var _listWordsStateFlow : MutableStateFlow<UIState<List<QuizModel>>>
             = MutableStateFlow(UIState.Started)

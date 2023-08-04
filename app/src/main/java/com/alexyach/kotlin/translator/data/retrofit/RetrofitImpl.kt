@@ -1,26 +1,27 @@
 package com.alexyach.kotlin.translator.data.retrofit
 
 import com.alexyach.kotlin.translator.data.retrofit.modelDto.WordTranslate
-import com.alexyach.kotlin.translator.domain.interfaces.ITranslateRepository
+import com.alexyach.kotlin.translator.domain.interfaces.IRemoteRepository
 import com.alexyach.kotlin.translator.domain.model.Language
 import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.UIState
+import com.alexyach.kotlin.translator.utils.APP_ID
+import com.alexyach.kotlin.translator.utils.APP_KEY
 import com.alexyach.kotlin.translator.utils.wordDtoToWordTranslateModel
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
-const val APP_ID = "fcff395e"
-const val APP_KEY = "113c5a63ae64ab35fe6e17dce98f0a65"
-const val BASE_URL = "https://od-api.oxforddictionaries.com/api/v2/"
+@Singleton
+class RetrofitImpl @Inject constructor(
+    val retrofit: Retrofit
+) : IRemoteRepository {
 
-
-class RetrofitImpl : ITranslateRepository {
-
+    private val api = retrofit.create(ITranslateService::class.java)
 
 
     override fun getTranslateWordAsync(word: String, language: Language) =
@@ -30,7 +31,7 @@ class RetrofitImpl : ITranslateRepository {
                 flow {
                     try {
                         val response =
-                            RetrofitBuilder.api.translateServiceAsyncEnRu(
+                            api.translateServiceAsyncEnRu(
                                 APP_ID,
                                 APP_KEY, word)
 
@@ -51,7 +52,7 @@ class RetrofitImpl : ITranslateRepository {
                 flow {
                     try {
                         val response =
-                            RetrofitBuilder.api.translateServiceAsyncRuEn(
+                            api.translateServiceAsyncRuEn(
                                 APP_ID,
                                 APP_KEY, word)
 
@@ -82,17 +83,4 @@ class RetrofitImpl : ITranslateRepository {
         }
         return UIState.Error("Не зрозуміла похибка")
     }
-}
-
-object RetrofitBuilder {
-    private val serviceImpl = Retrofit.Builder().apply {
-        baseUrl(BASE_URL)
-        addConverterFactory(
-            GsonConverterFactory.create(GsonBuilder().setLenient().create())
-        )
-    }.build()
-
-    val api: ITranslateService =
-        serviceImpl.create(ITranslateService::class.java)
-
 }
