@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [WordsEntityModel::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun getWordsDao(): WordsDao
-
+/*
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -24,5 +24,5 @@ abstract class AppDatabase: RoomDatabase() {
                 instance
             }
         }
-    }
+    }*/
 }
