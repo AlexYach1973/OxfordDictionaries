@@ -5,9 +5,8 @@ import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+//@Singleton
 class DatabaseImpl @Inject constructor(
     val wordsDao: WordsDao
 ) : IDatabaseRepository {

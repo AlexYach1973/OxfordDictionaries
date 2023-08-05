@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TranslateViewModel @Inject constructor(
-    val remoteRepository: IRemoteRepository,
-    val roomRepository: IDatabaseRepository
+    private val remoteRepository: IRemoteRepository,
+    private val roomRepository: IDatabaseRepository
 ) : ViewModel() {
 
     /** StateFlow */

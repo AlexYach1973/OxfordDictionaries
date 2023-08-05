@@ -8,6 +8,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 
 @Module
@@ -15,12 +16,14 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
+    @Singleton
     abstract fun provideRoomRepo(
         roomRepository: DatabaseImpl
     ) : IDatabaseRepository
 
     @Binds
-    abstract fun provideRemoteRepo(
+    @Singleton
+    abstract fun provideRetrofitRepo(
         remoteRepository: RetrofitImpl
     ): IRemoteRepository
 
