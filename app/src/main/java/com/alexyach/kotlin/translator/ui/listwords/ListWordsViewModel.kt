@@ -2,8 +2,6 @@ package com.alexyach.kotlin.translator.ui.listwords
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsEntityModel
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.ui.base.UIState
@@ -14,9 +12,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 const val SEARCH_SYMBOL = "♥"
-class ListWordsViewModel(database: AppDatabase) : ViewModel() {
-
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
+class ListWordsViewModel(
+    val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
     private var _listWordsStateFlow : MutableStateFlow<UIState<List<WordsEntityModel>>>
             = MutableStateFlow(UIState.Started)
@@ -56,16 +54,6 @@ class ListWordsViewModel(database: AppDatabase) : ViewModel() {
 
     fun searchWord(symbols: String) {
         val searchListWord = mutableListOf<WordsEntityModel>()
-
-       /* val newSymbol: String = SpannableString(symbols).apply {
-            setSpan(
-//                BackgroundColorSpan(Color.RED),
-                StyleSpan(Typeface.BOLD),
-//                ForegroundColorSpan(Color.RED),
-                0,
-                symbols.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }.toString()*/
 
         listWord.forEach {
             if (it.wordInit.contains(symbols) || it.wordTranslate.contains(symbols)) {

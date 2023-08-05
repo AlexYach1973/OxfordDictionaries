@@ -6,25 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentQuizBinding
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
-import com.alexyach.kotlin.translator.utils.viewModelCreator
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
 
     private lateinit var adapter: QuizAdapter
 
-    override val viewModel: QuizViewModel by viewModelCreator {
-        QuizViewModel(
-            (requireActivity().application as App).database
-        )
-    }
+    override val viewModel by viewModel<QuizViewModel>()
 
     override fun getViewBinding(
         inflater: LayoutInflater,

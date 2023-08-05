@@ -2,8 +2,6 @@ package com.alexyach.kotlin.translator.ui.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexyach.kotlin.translator.data.local.DatabaseImpl
-import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.domain.interfaces.IDatabaseRepository
 import com.alexyach.kotlin.translator.domain.model.QuizModel
 import com.alexyach.kotlin.translator.ui.base.UIState
@@ -15,16 +13,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-class QuizViewModel(database: AppDatabase) : ViewModel() {
+class QuizViewModel(
+    val roomRepository: IDatabaseRepository
+) : ViewModel() {
 
-    private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
-
-    private var _listWordsStateFlow : MutableStateFlow<UIState<List<QuizModel>>>
-            = MutableStateFlow(UIState.Started)
+    private var _listWordsStateFlow: MutableStateFlow<UIState<List<QuizModel>>> =
+        MutableStateFlow(UIState.Started)
     val listWordsStateFlow: StateFlow<UIState<List<QuizModel>>> = _listWordsStateFlow
 
     private var _initWordFlow = MutableStateFlow(QuizModel(0, "", "", true))
-    var initWordFlow : StateFlow<QuizModel> = _initWordFlow
+    var initWordFlow: StateFlow<QuizModel> = _initWordFlow
 
     // Count
     private var _countGuessWordFlow = MutableStateFlow(0)
@@ -44,7 +42,7 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     fun guessWord(guessList: List<QuizModel>, word: QuizModel) {
         if (word.id == _initWordFlow.value.id) {
             _countGuessWordFlow.value++
-            toTrueIsGuess()
+            toTrueFieldIsGuess()
             selectionWords()
         } else {
             _countNoGuessWordFlow.value--
@@ -52,7 +50,7 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
         }
     }
 
-    private fun toTrueIsGuess() {
+    private fun toTrueFieldIsGuess() {
         quizListWords.forEach { it.isGuess = true }
     }
 
@@ -73,6 +71,8 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private fun selectionWords() {
         quizListWords.shuffle()
 
+        if (quizListWords.isEmpty()) return
+
         if (quizListWords.size < 10) {
             randomWords(quizListWords)
         } else {
@@ -87,6 +87,6 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private fun randomWords(dataList: MutableList<QuizModel>) {
         _initWordFlow.value = dataList[0]
         dataList.shuffle()
-        _listWordsStateFlow.value =  UIState.Success(dataList)
+        _listWordsStateFlow.value = UIState.Success(dataList)
     }
 }

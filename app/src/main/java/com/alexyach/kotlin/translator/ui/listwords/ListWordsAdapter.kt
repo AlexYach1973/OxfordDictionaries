@@ -39,24 +39,5 @@ class ListWordsAdapter(
         }
 
     }
-
-    /*companion object {
-        private val DiffCallback =
-            object : DiffUtil.ItemCallback<WordsEntityModel>() {
-                override fun areItemsTheSame(
-                    oldItem: WordsEntityModel,
-                    newItem: WordsEntityModel
-                ): Boolean {
-                    return oldItem.id == newItem.id
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: WordsEntityModel,
-                    newItem: WordsEntityModel
-                ): Boolean {
-                    return oldItem == newItem
-                }
-            }
-    }*/
 }
 

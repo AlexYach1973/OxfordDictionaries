@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.alexyach.kotlin.translator.App
 import com.alexyach.kotlin.translator.R
 import com.alexyach.kotlin.translator.databinding.FragmentTranslateBinding
 import com.alexyach.kotlin.translator.domain.model.Language
@@ -21,9 +20,9 @@ import com.alexyach.kotlin.translator.domain.model.WordTranslateModel
 import com.alexyach.kotlin.translator.ui.base.BaseFragment
 import com.alexyach.kotlin.translator.ui.base.UIState
 import com.alexyach.kotlin.translator.ui.listwords.ListWordsFragment
-import com.alexyach.kotlin.translator.utils.viewModelCreator
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         TranslateViewModel>() {
@@ -37,11 +36,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
     private lateinit var adapter: TranslateAdapter
     private var wordTranslateModel = WordTranslateModel()
 
-    override val viewModel: TranslateViewModel by viewModelCreator {
-        TranslateViewModel(
-            (requireActivity().application as App).database
-        )
-    }
+    override val viewModel: TranslateViewModel by viewModel<TranslateViewModel>()
 
     override fun getViewBinding(
         inflater: LayoutInflater,
@@ -171,15 +166,6 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding,
         showText()
         hideFabSave()
     }
-
-
-    // Log
-//        Log.d("myLogs", "lexicalEntries: ${wordDto.results[0].lexicalEntries.size}")
-//        Log.d("myLogs", "entries: ${wordDto.results[0].lexicalEntries[0].entries.size}")
-//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses.size}")
-//        Log.d("myLogs", "translations: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].translations.size}")
-//        Log.d("myLogs", "examples: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples.size}")
-//        Log.d("myLogs", "senses: ${wordDto.results[0].lexicalEntries[0].entries[0].senses[0].examples[0].text}")
 
     private fun setupSound(soundPath: String) {
         if (!soundPath.isNullOrEmpty()) {

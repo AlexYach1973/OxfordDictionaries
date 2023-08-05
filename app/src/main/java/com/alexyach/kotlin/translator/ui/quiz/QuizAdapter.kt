@@ -47,9 +47,10 @@ class QuizAdapter(
             }
 
             binding.root.setOnClickListener {
-                click(item)
-//                notifyDataSetChanged()
-                notifyItemChanged(adapterPosition)
+                if (item.isGuess) {
+                    click(item)
+                    notifyItemChanged(adapterPosition)
+                }
             }
         }
     }

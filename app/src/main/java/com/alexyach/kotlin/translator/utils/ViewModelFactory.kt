@@ -1,3 +1,4 @@
+/*
 package com.alexyach.kotlin.translator.utils
 
 import androidx.fragment.app.Fragment
@@ -16,4 +17,4 @@ class ViewModelFactory<VM: ViewModel> (
 inline  fun <reified VM : ViewModel> Fragment
         .viewModelCreator(noinline  creator: ViewModelCreator<VM>): Lazy<VM> {
     return viewModels {ViewModelFactory(creator)}
-}
+}*/
