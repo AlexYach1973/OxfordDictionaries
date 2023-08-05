@@ -11,5 +11,4 @@ class App : Application() {
         DaggerAppComponent.factory().create(applicationContext)
     }
 
-    val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }
 }

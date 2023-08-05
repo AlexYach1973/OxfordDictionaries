@@ -1,6 +1,7 @@
 package com.alexyach.kotlin.translator.di.modules
 
 import android.content.Context
+import androidx.room.Room
 import com.alexyach.kotlin.translator.data.local.database.AppDatabase
 import com.alexyach.kotlin.translator.data.local.database.WordsDao
 import dagger.Module
@@ -13,7 +14,11 @@ class DataBaseModule {
     @Singleton
     @Provides
     fun database(context: Context): AppDatabase =
-        AppDatabase.getDatabase(context)
+        Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "app_database"
+        ).build()
 
     @Singleton
     @Provides
