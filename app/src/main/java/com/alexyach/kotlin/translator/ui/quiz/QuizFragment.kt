@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.alexyach.kotlin.translator.App
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
 
     private lateinit var adapter: QuizAdapter
+    private lateinit var initWord: QuizModel
 
     override val viewModel: QuizViewModel by viewModelCreator {
         QuizViewModel(
@@ -50,7 +52,9 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
         viewModel.initWordFlow
             .flowWithLifecycle(lifecycle)
             .onEach {
+                initWord = it
                 showInitWord(it.wordInit)
+                animationTextView(binding.wordQuizTextView)
             }
             .launchIn(lifecycleScope)
 
@@ -59,6 +63,7 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
             .flowWithLifecycle(lifecycle)
             .onEach {
                 binding.countGuessWord.text = it.toString()
+                animationTextView(binding.countGuessWord)
             }
             .launchIn(lifecycleScope)
 
@@ -66,6 +71,7 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
             .flowWithLifecycle(lifecycle)
             .onEach {
                 binding.countNoGuessWord.text = it.toString()
+                animationTextView(binding.countNoGuessWord)
             }
             .launchIn(lifecycleScope)
 
@@ -90,13 +96,6 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
         binding.wordQuizTextView.text = word
     }
 
-    private fun setupAdapter(dataList: List<QuizModel>) {
-        adapter = QuizAdapter(dataList) { word ->
-            viewModel.guessWord(dataList, word)
-        }
-        binding.quizRecyclerView.adapter = adapter
-    }
-
     private fun showError(error: String) {
         setupAdapter(
             listOf(
@@ -114,6 +113,20 @@ class QuizFragment : BaseFragment<FragmentQuizBinding, QuizViewModel>() {
     private fun showLoading() {
         binding.quizFragmentProgressbar.visibility = View.VISIBLE
         binding.llQuizFragment.visibility = View.GONE
+    }
+
+    private fun setupAdapter(dataList: List<QuizModel>) {
+        adapter = QuizAdapter(dataList) { word ->
+            viewModel.guessWord(dataList, word)
+        }
+        binding.quizRecyclerView.adapter = adapter
+    }
+
+    private fun animationTextView(view: View) {
+        view.animation =
+            AnimationUtils.loadAnimation(
+                requireContext(), R.anim.anim_text_view
+            )
     }
 
     private fun setupToolBar() {

@@ -19,12 +19,12 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
 
     private val roomRepository: IDatabaseRepository = DatabaseImpl(database)
 
-    private var _listWordsStateFlow : MutableStateFlow<UIState<List<QuizModel>>>
-            = MutableStateFlow(UIState.Started)
+    private var _listWordsStateFlow: MutableStateFlow<UIState<List<QuizModel>>> =
+        MutableStateFlow(UIState.Started)
     val listWordsStateFlow: StateFlow<UIState<List<QuizModel>>> = _listWordsStateFlow
 
     private var _initWordFlow = MutableStateFlow(QuizModel(0, "", "", true))
-    var initWordFlow : StateFlow<QuizModel> = _initWordFlow
+    var initWordFlow: StateFlow<QuizModel> = _initWordFlow
 
     // Count
     private var _countGuessWordFlow = MutableStateFlow(0)
@@ -40,7 +40,6 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
         getListWords()
     }
 
-
     fun guessWord(guessList: List<QuizModel>, word: QuizModel) {
         if (word.id == _initWordFlow.value.id) {
             _countGuessWordFlow.value++
@@ -53,7 +52,10 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     }
 
     private fun toTrueIsGuess() {
-        quizListWords.forEach { it.isGuess = true }
+        quizListWords.forEach {
+            it.isGuess = true
+//            it.bingo = false
+        }
     }
 
     private fun getListWords() {
@@ -63,14 +65,26 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
             roomRepository.getAll()
                 .flowOn(Dispatchers.IO)
                 .catch { _listWordsStateFlow.value = UIState.Error(it.message ?: "Error") }
-                .collect {
-                    quizListWords = entityListToQuizList(it)
-                    selectionWords()
+                .collect { wordEntityList ->
+                    if (wordEntityList.isNotEmpty()) {
+                        quizListWords = entityListToQuizList(wordEntityList)
+                        selectionWords()
+                    } else {
+                        _listWordsStateFlow.value = UIState.Success(listOf(
+                            QuizModel(
+                                0,
+                                "",
+                                "List is Empty"
+                            )
+                        ))
+                    }
                 }
         }
     }
 
     private fun selectionWords() {
+        if (quizListWords.isEmpty()) return
+
         quizListWords.shuffle()
 
         if (quizListWords.size < 10) {
@@ -87,6 +101,6 @@ class QuizViewModel(database: AppDatabase) : ViewModel() {
     private fun randomWords(dataList: MutableList<QuizModel>) {
         _initWordFlow.value = dataList[0]
         dataList.shuffle()
-        _listWordsStateFlow.value =  UIState.Success(dataList)
+        _listWordsStateFlow.value = UIState.Success(dataList)
     }
 }

@@ -4,5 +4,6 @@ data class QuizModel(
     val id: Int,
     val wordInit: String,
     val wordTranslate: String,
-    var isGuess: Boolean = true
+    var isGuess: Boolean = true,
+    var bingo: Boolean = false
 )

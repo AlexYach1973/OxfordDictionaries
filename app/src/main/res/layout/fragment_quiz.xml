@@ -43,7 +43,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/countNoGuessWord"
@@ -64,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="4dp"
-                android:textSize="26sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 tools:text="Quiz"/>
 
@@ -86,6 +87,7 @@
             android:id="@+id/quizRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutAnimation="@anim/layout_animation_quiz_recycler"
             tools:listitem="@layout/quiz_recycler_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
