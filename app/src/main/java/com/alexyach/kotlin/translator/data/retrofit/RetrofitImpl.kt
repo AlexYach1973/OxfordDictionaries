@@ -14,8 +14,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val APP_ID = "fcff395e"
-const val APP_KEY = "113c5a63ae64ab35fe6e17dce98f0a65"
+const val APP_ID = ""
+const val APP_KEY = ""
 const val BASE_URL = "https://od-api.oxforddictionaries.com/api/v2/"
 
 
